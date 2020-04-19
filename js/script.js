@@ -168,24 +168,37 @@ function validateFormInputs(event){
     let nameField = basicInfo.children[2]
     let email = basicInfo.children[4]
     let cost = parseInt(actCost.innerHTML.match(/[0-9]+.\d{2}/)[0])
-    let ccNum = payment.querySelector('#cc-num')
+    let ccNum = payment.querySelector('#cc-num').value
     let ccZip = payment.querySelector('#zip')
     let ccCVV = payment.querySelector('#cvv')
     
     let nameRegex = /\w+/
     let emailRegex = /^\w+@\w+\.[a-z]{3}$/i
+    //2nd half of the top level or accounts for american express format 
+    let ccNumRegEx = /(^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,4}$|^\d{4}[ -]?\d{6}[ -]?\d{5}$)/
 
     //if the following conditions are all met, submit the form
     //1. name is not blank
     //2. email is in the format of words@words.3(letters), submit the form
     //3. at least one activity has been selected
-    if(
-        nameRegex.test(nameField.value) && 
-        emailRegex.test(email.value) &&
-        cost>0){
-        
-        submitButton.setAttribute('type', 'submit')    
-    }  
+    //4. credit card number is 13-16 digits (nested a for-loop to only validate
+    //   the CC # if the credit card option was selected)
+    if(payment.children[3].style.display === ''){
+        if(
+            nameRegex.test(nameField.value) && 
+            emailRegex.test(email.value) &&
+            cost>0 &&
+            ccNumRegEx.test(ccNum)){            
+                submitButton.setAttribute('type', 'submit')    
+        }
+    }else{
+        if(
+            nameRegex.test(nameField.value) && 
+            emailRegex.test(email.value) &&
+            cost>0){            
+                submitButton.setAttribute('type', 'submit')    
+        }
+    }
 }
 //if "other" is selected as a job role, create a new input element
 basicInfo.addEventListener('change', event => {
