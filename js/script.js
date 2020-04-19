@@ -78,9 +78,9 @@ function updateActivitiesList(event){
         let activityName = activityList[i].firstElementChild.getAttribute('name')
         let isDisabled = activityList[i].firstElementChild.disabled
         
-        //if an activity matches the dateTime of the clicked on event and has
-        //not already been flagged as unavailable. create the double book message
-        //<label> and format the the original <label>
+        //if an activity matches the dateTime of the clicked on event and is
+        //enabled, create the double book message <label> and format the
+        //original <label>
         if (activityDateTime === eventDateTime && activityName !== eventName && 
                                                             !isDisabled){
             let doubleBook = document.createElement('label')
@@ -95,7 +95,7 @@ function updateActivitiesList(event){
             updateElementStyle(activityList[i],'black', 'red', true)
         }
         //if the activity matches the dateTime of the clicked on event
-        //but IS flagged as unavailable, reverse the formatting changes
+        //but is disabled, reverse the formatting changes
         if (activityDateTime === eventDateTime && activityName !== eventName && 
                                                             isDisabled){
             activityList[i].removeChild(activityList[i].lastElementChild)
@@ -116,7 +116,6 @@ function updateActivitiesList(event){
         element.style.color = textColor
         element.firstElementChild.disabled = disabled
     }
-
 }
 function updateInvoiceTotal(event){
 
