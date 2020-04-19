@@ -56,9 +56,6 @@ payment.querySelector('#payment').removeChild(payment.querySelector('#payment')
 payment.lastElementChild.style.display = 'none'
 payment.lastElementChild.previousElementSibling.style.display = 'none'
 
-
-
-
 function shirtColorByDesign(event){    
     //clear the last selection from the color field
     shirt.querySelector('#color').value = ''
@@ -178,9 +175,9 @@ function validateFormInputs(event){
     let nameField = basicInfo.querySelector('#name')
     let email = basicInfo.querySelector('#mail')
     let cost = parseInt(actCost.innerHTML.match(/[0-9]+.\d{2}/)[0])
-    let ccNum = payment.querySelector('#ccnum').value
-    let ccZip = payment.querySelector('#zip').value
-    let ccCVV = payment.querySelector('#cvv').value
+    let ccNum = payment.querySelector('#ccnum')
+    let ccZip = payment.querySelector('#zip')
+    let ccCVV = payment.querySelector('#cvv')
     
     let nameRegex = /\w+/
     let emailRegex = /^\w+@\w+\.[a-z]{3}$/i
@@ -189,7 +186,7 @@ function validateFormInputs(event){
     let ccZipRegex = /^\d{5}$/
     let ccCVVRegex = /^\d{3}$/
 
-    //if the following conditions are all met, submit the form
+    //validate each field and display or remove an error message accordingly
     //1. name is not blank
     //2. email is in the format of words@words.3(letters)
     //3. at least one activity has been selected
@@ -197,41 +194,41 @@ function validateFormInputs(event){
     //   4a. number is 13-16 numerals
     //   4b. zip is 5 numerals
     //   4c. cvv is 3 numerals
-    //original logic block before adding error messages
-    // if(payment.children[3].style.display === ''){
-    //     if(
-    //         nameRegex.test(nameField.value) && 
-    //         emailRegex.test(email.value) &&
-    //         cost>0 &&
-    //         ccNumRegex.test(ccNum) &&
-    //         ccZipRegex.test(ccZip) &&
-    //         ccCVVRegex.test(ccCVV)){            
-    //         submitButton.setAttribute('type', 'submit')    
-    //     }
-    // }else{
-    //     if(
-    //         nameRegex.test(nameField.value) && 
-    //         emailRegex.test(email.value) &&
-    //         cost>0){            
-    //         submitButton.setAttribute('type', 'submit')    
-    //     }
-    // }
+    if (!nameRegex.test(nameField.value)){
+        submitButton.setAttribute('type', 'button')
+        messageToElement(nameField, true)
+    }else{
+        messageToElement(nameField, false)
+    }
+    
+    if (!emailRegex.test(email.value)){
+        submitButton.setAttribute('type', 'button')
+        messageToElement(email, true)
+    }else{
+        messageToElement(email, false)
+    } 
     if(payment.children[3].style.display === ''){
-        if (!nameRegex.test(nameField.value)){
+        if (!ccNumRegex.test(ccNum.value)){
             submitButton.setAttribute('type', 'button')
-            messageToElement(nameField, true)
+            messageToElement(ccNum, true)
         }else{
-            messageToElement(nameField, false)
-        }
-        
-        if (!emailRegex.test(email.value)){
+            messageToElement(ccNum, false)
+        } 
+
+        if (!ccZipRegex.test(ccZip.value)){
             submitButton.setAttribute('type', 'button')
-            messageToElement(email, true)
+            messageToElement(ccZip, true)
         }else{
-            messageToElement(email, false)
+            messageToElement(ccZip, false)
+        } 
+
+        if (!ccCVVRegex.test(ccCVV.value)){
+            submitButton.setAttribute('type', 'button')
+            messageToElement(ccCVV, true)
+        }else{
+            messageToElement(ccCVV, false)
         } 
     }
-    submitButton.setAttribute('type', 'button')
 }
 function messageToElement(element, error){
     const elementPointer = document.getElementById(element.id)
@@ -250,8 +247,7 @@ function messageToElement(element, error){
         //if no error label is already present, add it from the DOM
         if(element.previousElementSibling.id !== 'error'){
             elementPointer.parentNode.insertBefore(error,elementPointer)
-        }
-                
+        }         
         element.focus()
     }else{
         //if an error label is not already present, remove it from the DOM
@@ -261,7 +257,6 @@ function messageToElement(element, error){
         element.style.backgroundColor = 'white'
         element.style.color = 'black'
         element.style.borderColor = 'rgb(111, 157, 220)'
-        element.focus()
     }
 }
 //if "other" is selected as a job role, create a new input element
