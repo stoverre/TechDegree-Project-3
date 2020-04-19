@@ -8,14 +8,13 @@ Richard Stover
 let formElement = document.querySelector('form')
 let pageCategoriesList = formElement.children
 
-//get reference to each <fieldset> (category) of the form
+//get an HTMLCollection for each <fieldset> (category) of the form
 let basicInfo = pageCategoriesList[0]
 let shirt = pageCategoriesList[1]
 let activities = pageCategoriesList[2]
 let payment = pageCategoriesList[3]
 
-//HTMLCollection of the shirt color options
-let shirtColors = shirt.querySelector('#color').children
+
 
 //create the color placeholder <option>
 let colorList = document.querySelector('#color')
@@ -24,8 +23,27 @@ colorPlaceHolder.value="placeholder"
 colorPlaceHolder.innerHTML = 'Please select a T-shirt theme'
 colorList.insertBefore(colorPlaceHolder, colorList.firstElementChild)
 
-function updateShirtColorState(regex){
-    console.log(regex)
+//set focus on the Name field
+basicInfo.querySelector('input').focus()
+//initiliaze the shirt color list
+setShirtColorState()
+
+function shirtColorByDesign(event){    
+    //clear the last selection from the color field
+    shirt.querySelector('#color').value = ''
+    
+    if(event.target.value === "js puns"){
+        setShirtColorState(/.*JS Puns.*/i)
+    } else if (event.target.value === "heart js"){
+        setShirtColorState(/.*JS shirt.*/i)
+    } else {
+        setShirtColorState()
+    }
+}
+function setShirtColorState(regex){
+    //HTMLCollection of the shirt color options
+    let shirtColors = shirt.querySelector('#color').children
+    
     if(regex===undefined){
         shirt.querySelector('#color').value = "placeholder"
         //hide everything except the placeholder
@@ -43,26 +61,14 @@ function updateShirtColorState(regex){
         }
     }
 }
+function setActivitiesListState(){
 
-function shirtColorByDesign(event){    
-    //clear the last selection from the color field
-    shirt.querySelector('#color').value = ''
+}
+function updateInvoiceTotal(){
     
-    if(event.target.value === "js puns"){
-        updateShirtColorState(/.*JS Puns.*/i)
-    } else if (event.target.value === "heart js"){
-        updateShirtColorState(/.*JS shirt.*/i)
-    } else {
-        updateShirtColorState()
-    }
 }
 
-//set focus on the Name field
-basicInfo.querySelector('input').focus()
-
-updateShirtColorState()
-
-//if "other" is selected, create a new input element
+//if "other" is selected as a job role, create a new input element
 basicInfo.addEventListener('change', event => {
     if(event.target.id === 'title'){
         if(event.target.value === "other"){
@@ -75,10 +81,18 @@ basicInfo.addEventListener('change', event => {
         }
     }
 })
-
-//showing specific shirt colors based on the design selected
+//if the shirt design changes, update the shirt color list
 document.querySelector('#design').addEventListener('change', event => {
     shirtColorByDesign(event)        
+})
+//if a change occurs to the activites selected, per two actions
+//1. Update the entire list to make double booking unavailable
+//2. Update the total cost of activites
+document.querySelector('.activities').addEventListener('change', event => {
+    if(event.target.tagName === 'INPUT'){
+        setActivitiesListState()
+        updateInvoiceTotal()
+    }
 })
 
 
