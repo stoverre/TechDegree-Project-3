@@ -16,6 +16,16 @@ let payment = pageCategoriesList[3]
 
 //create a global variable for the submit button
 let submitButton = document.getElementsByTagName('button')[0]
+//create a validation rules object
+const rules = {
+    name: 'Name cannot be blank', 
+    mail: 'Email must be formatted as name@domain.com and cannot be blank',
+    activities: 'At least one activity must be selected',
+    ccnum: 'Credit Card number must be between 13 and 16 digits',
+    zip: 'Zip Code must be 5 digits',
+    cvv: 'CVV must be 3 digits'}
+//updating the id so I can directly reference it with the rules object
+payment.querySelector('#cc-num').id = 'ccnum'
 
 //create the color placeholder <option>
 let colorList = document.querySelector('#color')
@@ -136,7 +146,7 @@ function updateActivitiesList(event){
     }
      /**
      * @function updateActivityStyle - DRY function to update a specific activity
-     *                                 styling based on if it is or is not available
+     *                                 styling based on if it is or is not disabled
      * @param {element} element - the element to be updated
      * @param {string} backgroundColor - new background color of the element 
      * @param {string} textColor - new text color of the element 
@@ -165,10 +175,10 @@ function updatePayment(event){
     }
 }
 function validateFormInputs(event){
-    let nameField = basicInfo.children[2]
-    let email = basicInfo.children[4]
+    let nameField = basicInfo.querySelector('#name')
+    let email = basicInfo.querySelector('#mail')
     let cost = parseInt(actCost.innerHTML.match(/[0-9]+.\d{2}/)[0])
-    let ccNum = payment.querySelector('#cc-num').value
+    let ccNum = payment.querySelector('#ccnum').value
     let ccZip = payment.querySelector('#zip').value
     let ccCVV = payment.querySelector('#cvv').value
     
@@ -181,29 +191,77 @@ function validateFormInputs(event){
 
     //if the following conditions are all met, submit the form
     //1. name is not blank
-    //2. email is in the format of words@words.3(letters), submit the form
+    //2. email is in the format of words@words.3(letters)
     //3. at least one activity has been selected
     //4. if credit card is the selected payment method
     //   4a. number is 13-16 numerals
     //   4b. zip is 5 numerals
     //   4c. cvv is 3 numerals
+    //original logic block before adding error messages
+    // if(payment.children[3].style.display === ''){
+    //     if(
+    //         nameRegex.test(nameField.value) && 
+    //         emailRegex.test(email.value) &&
+    //         cost>0 &&
+    //         ccNumRegex.test(ccNum) &&
+    //         ccZipRegex.test(ccZip) &&
+    //         ccCVVRegex.test(ccCVV)){            
+    //         submitButton.setAttribute('type', 'submit')    
+    //     }
+    // }else{
+    //     if(
+    //         nameRegex.test(nameField.value) && 
+    //         emailRegex.test(email.value) &&
+    //         cost>0){            
+    //         submitButton.setAttribute('type', 'submit')    
+    //     }
+    // }
     if(payment.children[3].style.display === ''){
-        if(
-            nameRegex.test(nameField.value) && 
-            emailRegex.test(email.value) &&
-            cost>0 &&
-            ccNumRegex.test(ccNum) &&
-            ccZipRegex.test(ccZip) &&
-            ccCVVRegex.test(ccCVV)){            
-                submitButton.setAttribute('type', 'submit')    
+        if (!nameRegex.test(nameField.value)){
+            submitButton.setAttribute('type', 'button')
+            messageToElement(nameField, true)
+        }else{
+            messageToElement(nameField, false)
         }
+        
+        if (!emailRegex.test(email.value)){
+            submitButton.setAttribute('type', 'button')
+            messageToElement(email, true)
+        }else{
+            messageToElement(email, false)
+        } 
+    }
+    submitButton.setAttribute('type', 'button')
+}
+function messageToElement(element, error){
+    const elementPointer = document.getElementById(element.id)
+    //if error is true, update the formatting to display error message
+    //else revert the element to the original formatting
+    if (error){
+        //create the error message
+        const error = document.createElement('label')
+        
+        error.innerHTML = rules[element.id]
+        error.id = 'error'
+        error.style.color = 'red'
+        error.style.backgroundColor = 'black'
+        element.style.borderColor = 'red'
+        
+        //if no error label is already present, add it from the DOM
+        if(element.previousElementSibling.id !== 'error'){
+            elementPointer.parentNode.insertBefore(error,elementPointer)
+        }
+                
+        element.focus()
     }else{
-        if(
-            nameRegex.test(nameField.value) && 
-            emailRegex.test(email.value) &&
-            cost>0){            
-                submitButton.setAttribute('type', 'submit')    
+        //if an error label is not already present, remove it from the DOM
+        if(element.previousElementSibling.id === 'error'){
+            elementPointer.parentNode.removeChild(elementPointer.previousElementSibling)
         }
+        element.style.backgroundColor = 'white'
+        element.style.color = 'black'
+        element.style.borderColor = 'rgb(111, 157, 220)'
+        element.focus()
     }
 }
 //if "other" is selected as a job role, create a new input element
@@ -237,7 +295,7 @@ document.querySelector('#payment').addEventListener('change', event => {
 })
 //look for a register button click
 submitButton.addEventListener('click', event => {
-    submitButton.setAttribute('type', 'button')
+    submitButton.setAttribute('type', 'submit')
     validateFormInputs(event)
 })
 
