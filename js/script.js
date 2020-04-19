@@ -79,34 +79,50 @@ function updateActivitiesList(event){
     //disable other activities that occur at the same time as the selected one
     for(let i=1; i<activityList.length; i+=1){
 
+        //pull the dateTime, Name, and available attribute from the current list
+        //activity
         let activityDateTime = activityList[i].firstElementChild.getAttribute('data-day-and-time')
         let activityName = activityList[i].firstElementChild.getAttribute('name')
         let isAvailable =activityList[i].firstElementChild.getAttribute('available')
-
+        
+        //if an activity matches the dateTime of the clicked on event and has
+        //not already been flagged as unavailable. create the double book message
+        //<label> and format the the original <label>
         if (activityDateTime === eventDateTime && activityName !== eventName && 
                                                             isAvailable === 'true'){
-            activityList[i].firstElementChild.disabled = true
             let doubleBook = document.createElement('label')
-            doubleBook.innerHTML = 'You have already selected an activity held at this time.'
+            doubleBook.innerHTML = 'You have already selected an activity held at' 
+                doubleBook.innerHTML += ' this time.'
             doubleBook.style.color = 'red'
             doubleBook.style.fontSize = '1em'
             doubleBook.style.font = 'bold'
             doubleBook.style.backgroundColor = 'black'
 
             activityList[i].appendChild(doubleBook)
-            activityList[i].style.backgroundColor = 'black'
-            activityList[i].style.color = 'red'
-            activityList[i].firstElementChild.setAttribute('available', 'false')
-        } else if (activityDateTime === eventDateTime && activityName !== eventName && 
+            updateElementStyle(activityList[i],'black', 'red', true)
+        }
+        //if the activity matches the dateTime of the clicked on event
+        //but IS flagged as unavailable, reverse the formatting changes
+        if (activityDateTime === eventDateTime && activityName !== eventName && 
                                                             isAvailable === 'false'){
             activityList[i].removeChild(activityList[i].lastElementChild)
-            activityList[i].style.backgroundColor = '#9BBEEF'
-            activityList[i].style.color = 'black'
-            activityList[i].firstElementChild.setAttribute('available', 'true')
-            activityList[i].firstElementChild.disabled = false
-        } else {
-
-        }
+            updateElementStyle(activityList[i],'#9BBEEF', 'black', false)
+        } 
+    }
+     /**
+     * @function updateActivityStyle - DRY function to update a specific activity
+     *                                 styling based on if it is or is not available
+     * @param {element} element - the element to be updated
+     * @param {string} backgroundColor - new background color of the element 
+     * @param {string} textColor - new text color of the element 
+     * @param {boolean} disabled - set the available attribute of the element and
+     *                             enable/disable the checkbox
+     */
+    function updateElementStyle(element, backgroundColor, textColor, disabled){
+        element.style.backgroundColor = backgroundColor
+        element.style.color = textColor
+        element.firstElementChild.setAttribute('available', `${!disabled}`)
+        element.firstElementChild.disabled = disabled
     }
 
 }
