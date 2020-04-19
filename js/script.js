@@ -28,7 +28,7 @@ colorList.insertBefore(colorPlaceHolder, colorList.firstElementChild)
 let actCost = document.createElement('label')
 actCost.innerHTML = 'test'
 actCost.style.visibility = 'hidden'
-actCost.innerHTML = '$50.00'
+actCost.innerHTML = '$0.00'
 activities.appendChild(actCost)
 
 //set focus on the Name field
@@ -167,7 +167,7 @@ function updatePayment(event){
 function validateFormInputs(event){
     let nameField = basicInfo.children[2]
     let email = basicInfo.children[4]
-    let cost = parseInt(actCost.innerHTML)
+    let cost = parseInt(actCost.innerHTML.match(/[0-9]+.\d{2}/)[0])
     let ccNum = payment.querySelector('#cc-num')
     let ccZip = payment.querySelector('#zip')
     let ccCVV = payment.querySelector('#cvv')
@@ -175,18 +175,18 @@ function validateFormInputs(event){
     let nameRegex = /\w+/
     let emailRegex = /^\w+@\w+\.[a-z]{3}$/i
 
-    //if the name is not blank, submit the form
-    if(nameRegex.test(nameField.value)){
+    //if the following conditions are all met, submit the form
+    //1. name is not blank
+    //2. email is in the format of words@words.3(letters), submit the form
+    //3. at least one activity has been selected
+    if(
+        nameRegex.test(nameField.value) && 
+        emailRegex.test(email.value) &&
+        cost>0){
+        
         submitButton.setAttribute('type', 'submit')    
-        console.log(submitButton.getAttribute('type'))
-    }
-    //if the email is in the format of words@words.3(letters), submit the form
-    if(emailRegex.test(email.value)){
-        submitButton.setAttribute('type', 'submit')    
-        console.log(submitButton.getAttribute('type'))
-    }
+    }  
 }
-
 //if "other" is selected as a job role, create a new input element
 basicInfo.addEventListener('change', event => {
     if(event.target.id === 'title'){
