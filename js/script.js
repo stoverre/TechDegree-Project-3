@@ -24,42 +24,43 @@ colorPlaceHolder.value="placeholder"
 colorPlaceHolder.innerHTML = 'Please select a T-shirt theme'
 colorList.insertBefore(colorPlaceHolder, colorList.firstElementChild)
 
-function initializeShirtColorState(){
-    shirt.querySelector('#color').value = "placeholder"
-    //hide everything except the placeholder
-    shirtColors[0].style.display = ''
-    for(let i=1; i<shirtColors.length; i+=1){
-        shirtColors[i].style.display = 'none'
+function updateShirtColorState(regex){
+    console.log(regex)
+    if(regex===undefined){
+        shirt.querySelector('#color').value = "placeholder"
+        //hide everything except the placeholder
+        shirtColors[0].style.display = ''
+        for(let i=1; i<shirtColors.length; i+=1){
+            shirtColors[i].style.display = 'none'
+        }
+    } else {
+        for(let i=0; i<shirtColors.length; i+=1){
+            if(regex.test(shirtColors[i].innerHTML)){
+                shirtColors[i].style.display = ''
+            } else {
+                shirtColors[i].style.display = 'none'
+            }
+        }
     }
 }
 
-function updateShirtColors(event){    
+function shirtColorByDesign(event){    
     //clear the last selection from the color field
     shirt.querySelector('#color').value = ''
-    let regex
     
     if(event.target.value === "js puns"){
-        regex = /.*JS Puns.*/i
+        updateShirtColorState(/.*JS Puns.*/i)
     } else if (event.target.value === "heart js"){
-        regex = /.*JS shirt.*/i
+        updateShirtColorState(/.*JS shirt.*/i)
     } else {
-        initializeShirtColorState()
-        return
-    }
-
-    for(let i=0; i<shirtColors.length; i+=1){
-        if(regex.test(shirtColors[i].innerHTML)){
-            shirtColors[i].style.display = ''
-        } else {
-            shirtColors[i].style.display = 'none'
-        }
+        updateShirtColorState()
     }
 }
 
 //set focus on the Name field
 basicInfo.querySelector('input').focus()
 
-initializeShirtColorState()
+updateShirtColorState()
 
 //if "other" is selected, create a new input element
 basicInfo.addEventListener('change', event => {
@@ -77,7 +78,7 @@ basicInfo.addEventListener('change', event => {
 
 //showing specific shirt colors based on the design selected
 document.querySelector('#design').addEventListener('change', event => {
-    updateShirtColors(event)        
+    shirtColorByDesign(event)        
 })
 
 
