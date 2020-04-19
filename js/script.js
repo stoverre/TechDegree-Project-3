@@ -14,14 +14,21 @@ let shirt = pageCategoriesList[1]
 let activities = pageCategoriesList[2]
 let payment = pageCategoriesList[3]
 
-
-
 //create the color placeholder <option>
 let colorList = document.querySelector('#color')
 let colorPlaceHolder = document.createElement('option')
 colorPlaceHolder.value="placeholder"
 colorPlaceHolder.innerHTML = 'Please select a T-shirt theme'
 colorList.insertBefore(colorPlaceHolder, colorList.firstElementChild)
+
+//create the activity cost element and keep it hidden
+let actCost = document.createElement('label')
+actCost.innerHTML = 'test'
+actCost.style.visibility = 'hidden'
+actCost.innerHTML = '$50.00'
+activities.appendChild(actCost)
+
+
 
 //set focus on the Name field
 basicInfo.querySelector('input').focus()
@@ -70,7 +77,7 @@ function updateActivitiesList(event){
     let eventName = event.target.getAttribute('name')
     
     //disable other activities that occur at the same time as the selected one
-    for(let i=1; i<activityList.length; i+=1){
+    for(let i=1; i<activityList.length-1; i+=1){
 
         //pull the dateTime, Name, and available attribute from the current list
         //activity
@@ -118,7 +125,21 @@ function updateActivitiesList(event){
     }
 }
 function updateInvoiceTotal(event){
+    //pull the cost of the selected event from the event.target
+    //let eventCost = parseInt(event.target.getAttribute('data-cost'))
 
+    //HTMLCollection of the activity options
+    let activityList = activities.children
+    let newTotal = 0
+
+    for(let i=1; i<activityList.length-1; i+=1){
+        eventCost = parseInt(activityList[i].firstElementChild.getAttribute('data-cost'))
+        if(activityList[i].firstElementChild.checked){
+            newTotal += eventCost
+        }
+    }
+    actCost.innerHTML = `Total: ${newTotal}.00`
+    actCost.style.visibility = 'visible'
 }
 
 //if "other" is selected as a job role, create a new input element
@@ -138,9 +159,9 @@ basicInfo.addEventListener('change', event => {
 document.querySelector('#design').addEventListener('change', event => {
     shirtColorByDesign(event)        
 })
-//if a change occurs to the activites selected, per two actions
-//1. Update the entire list to make double booking unavailable
-//2. Update the total cost of activites
+//if a change occurs to the activities, perform two actions
+//1. Update the list to display a double book message, if necessary
+//2. Update the total cost of activities selected
 document.querySelector('.activities').addEventListener('change', event => {
     if(event.target.tagName === 'INPUT'){
         updateActivitiesList(event)
