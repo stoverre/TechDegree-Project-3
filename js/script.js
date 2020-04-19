@@ -107,7 +107,18 @@ function updateActivitiesList(event){
                                                             isDisabled){
             activityList[i].removeChild(activityList[i].lastElementChild)
             updateElementStyle(activityList[i],'#9BBEEF', 'black', false)
-        } 
+        }
+
+        //update the cost as activities are selected and deselected
+        let newTotal = 0
+        for(let i=1; i<activityList.length-1; i+=1){
+            eventCost = parseInt(activityList[i].firstElementChild.getAttribute('data-cost'))
+            if(activityList[i].firstElementChild.checked){
+                newTotal += eventCost
+            }
+        }
+        actCost.innerHTML = `Total: ${newTotal}.00`
+        actCost.style.visibility = 'visible'
     }
      /**
      * @function updateActivityStyle - DRY function to update a specific activity
