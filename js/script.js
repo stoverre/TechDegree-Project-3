@@ -14,6 +14,9 @@ let shirt = pageCategoriesList[1]
 let activities = pageCategoriesList[2]
 let payment = pageCategoriesList[3]
 
+//create a global variable for the submit button
+let submitButton = document.getElementsByTagName('button')[0]
+
 //create the color placeholder <option>
 let colorList = document.querySelector('#color')
 let colorPlaceHolder = document.createElement('option')
@@ -42,6 +45,7 @@ payment.querySelector('#payment').removeChild(payment.querySelector('#payment')
 //payment.lastElementChild.style.visibility = 'hidden'
 payment.lastElementChild.style.display = 'none'
 payment.lastElementChild.previousElementSibling.style.display = 'none'
+
 
 
 
@@ -160,6 +164,26 @@ function updatePayment(event){
         payment.children[5].style.display = 'none'
     }
 }
+function validateFormInputs(event){
+    let nameField = basicInfo.children[2]
+    let email = basicInfo.children[4]
+    let cost = parseInt(actCost.innerHTML)
+    let ccNum = payment.querySelector('#cc-num')
+    let ccZip = payment.querySelector('#zip')
+    let ccCVV = payment.querySelector('#cvv')
+    
+    //check the name is not blank: (at least one word character is present)
+    let regex = /\w+/
+    console.log(regex.test(nameField.value))
+    console.log(submitButton.getAttribute('type'))
+
+    
+    //if the name is not blank, allow the button to submit the form
+    if(regex.test(nameField.value)){
+        submitButton.setAttribute('type', 'submit')    
+        console.log(submitButton.getAttribute('type'))
+    }
+}
 
 //if "other" is selected as a job role, create a new input element
 basicInfo.addEventListener('change', event => {
@@ -186,10 +210,15 @@ document.querySelector('.activities').addEventListener('change', event => {
         updateActivitiesList(event)
     } 
 })
+//look for a payment type change
 document.querySelector('#payment').addEventListener('change', event => {
     updatePayment(event)
 })
-
+//look for a register button click
+submitButton.addEventListener('click', event => {
+    submitButton.setAttribute('type', 'button')
+    validateFormInputs(event)
+})
 
 
 
