@@ -28,12 +28,22 @@ actCost.style.visibility = 'hidden'
 actCost.innerHTML = '$50.00'
 activities.appendChild(actCost)
 
-
-
 //set focus on the Name field
 basicInfo.querySelector('input').focus()
 //initialize the shirt color list
 setShirtColorState()
+
+//initializing the payment section to default to CC and hide PayPal and Bitcoin
+//two ways of doing this. I opted to remove the the message option as it would
+//never be used with a default value being CC
+payment.querySelector('#payment').removeChild(payment.querySelector('#payment')
+                                                            .firstElementChild)
+//payment.querySelector('#payment').value = 'credit card'
+//payment.lastElementChild.style.visibility = 'hidden'
+payment.lastElementChild.style.display = 'none'
+payment.lastElementChild.previousElementSibling.style.display = 'none'
+
+
 
 function shirtColorByDesign(event){    
     //clear the last selection from the color field
@@ -135,22 +145,20 @@ function updateActivitiesList(event){
         element.firstElementChild.disabled = disabled
     }
 }
-function updateInvoiceTotal(event){
-    //pull the cost of the selected event from the event.target
-    //let eventCost = parseInt(event.target.getAttribute('data-cost'))
-
-    //HTMLCollection of the activity options
-    let activityList = activities.children
-    let newTotal = 0
-
-    for(let i=1; i<activityList.length-1; i+=1){
-        eventCost = parseInt(activityList[i].firstElementChild.getAttribute('data-cost'))
-        if(activityList[i].firstElementChild.checked){
-            newTotal += eventCost
-        }
+function updatePayment(event){
+    if(event.target.value === 'paypal'){
+        payment.children[3].style.display = 'none'
+        payment.children[4].style.display = ''
+        payment.children[5].style.display = 'none'
+    }else if(event.target.value === 'bitcoin'){
+        payment.children[3].style.display = 'none'
+        payment.children[4].style.display = 'none'
+        payment.children[5].style.display = ''
+    }else {
+        payment.children[3].style.display = ''
+        payment.children[4].style.display = 'none'
+        payment.children[5].style.display = 'none'
     }
-    actCost.innerHTML = `Total: ${newTotal}.00`
-    actCost.style.visibility = 'visible'
 }
 
 //if "other" is selected as a job role, create a new input element
@@ -176,8 +184,10 @@ document.querySelector('#design').addEventListener('change', event => {
 document.querySelector('.activities').addEventListener('change', event => {
     if(event.target.tagName === 'INPUT'){
         updateActivitiesList(event)
-        updateInvoiceTotal(event)
     } 
+})
+document.querySelector('#payment').addEventListener('change', event => {
+    updatePayment(event)
 })
 
 
