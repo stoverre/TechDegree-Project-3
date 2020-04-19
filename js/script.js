@@ -16,6 +16,10 @@ let payment = pageCategoriesList[3]
 
 //create a global variable for the submit button
 let submitButton = document.getElementsByTagName('button')[0]
+
+//start with other job role text field hidden
+basicInfo.lastElementChild.type = 'hidden'
+
 //create a validation rules object
 const rules = {
     name: 'Name cannot be blank', 
@@ -261,15 +265,12 @@ function messageToElement(element, error){
 }
 //if "other" is selected as a job role, create a new input element
 basicInfo.addEventListener('change', event => {
-    if(event.target.id === 'title'){
-        if(event.target.value === "other"){
-            let newElement = document.createElement('input')
-            newElement.type = 'text'
-            newElement.id = 'other-title'
-            newElement.placeholder = 'Your Job Role'
-            basicInfo.appendChild(newElement)
-            newElement.type = 'hidden'
-        }
+    console.log(event.target)
+    console.log(event.target.id)
+    if(event.target.value === 'other'){
+        basicInfo.lastElementChild.type = 'text'
+    }else{
+        basicInfo.lastElementChild.type = 'hidden'
     }
 })
 //if the shirt design changes, update the shirt color list
