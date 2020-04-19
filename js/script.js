@@ -25,7 +25,7 @@ basicInfo.addEventListener('click', event => {
             newElement.id = 'other-title'
             newElement.placeholder = 'Your Job Role'
             basicInfo.appendChild(newElement)
-            newElement.focus()
+            newElement.type = 'hidden'
         }
     }
 })
