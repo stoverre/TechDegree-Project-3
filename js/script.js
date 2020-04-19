@@ -25,8 +25,15 @@ colorList.insertBefore(colorPlaceHolder, colorList.firstElementChild)
 
 //set focus on the Name field
 basicInfo.querySelector('input').focus()
-//initiliaze the shirt color list
+//initialize the shirt color list
 setShirtColorState()
+//initialize the available attribute for all activities
+for(let index=1; index<activities.children.length; index+=1){
+    console.log(activities.children[index].firstElementChild)
+    let attrib = document.createAttribute('available')
+    attrib.value = 'true'
+    activities.children[index].firstElementChild.setAttributeNode(attrib)
+}
 
 function shirtColorByDesign(event){    
     //clear the last selection from the color field
@@ -61,11 +68,50 @@ function setShirtColorState(regex){
         }
     }
 }
-function setActivitiesListState(){
+function updateActivitiesList(event){
+    //HTMLCollection of the activity options
+    let activityList = activities.children
+    //pull the date and time of the selected event from the event.target
+    let eventDateTime = event.target.getAttribute('data-day-and-time')
+    //pull the event name of the selected event from the event.target
+    let eventName = event.target.getAttribute('name')
+    
+    //disable other activities that occur at the same time as the selected one
+    for(let i=1; i<activityList.length; i+=1){
+
+        let activityDateTime = activityList[i].firstElementChild.getAttribute('data-day-and-time')
+        let activityName = activityList[i].firstElementChild.getAttribute('name')
+        let isAvailable =activityList[i].firstElementChild.getAttribute('available')
+
+        if (activityDateTime === eventDateTime && activityName !== eventName && 
+                                                            isAvailable === 'true'){
+            activityList[i].firstElementChild.disabled = true
+            let doubleBook = document.createElement('label')
+            doubleBook.innerHTML = 'You have already selected an activity held at this time.'
+            doubleBook.style.color = 'red'
+            doubleBook.style.fontSize = '1em'
+            doubleBook.style.font = 'bold'
+            doubleBook.style.backgroundColor = 'black'
+
+            activityList[i].appendChild(doubleBook)
+            activityList[i].style.backgroundColor = 'black'
+            activityList[i].style.color = 'red'
+            activityList[i].firstElementChild.setAttribute('available', 'false')
+        } else if (activityDateTime === eventDateTime && activityName !== eventName && 
+                                                            isAvailable === 'false'){
+            activityList[i].removeChild(activityList[i].lastElementChild)
+            activityList[i].style.backgroundColor = '#9BBEEF'
+            activityList[i].style.color = 'black'
+            activityList[i].firstElementChild.setAttribute('available', 'true')
+            activityList[i].firstElementChild.disabled = false
+        } else {
+
+        }
+    }
 
 }
-function updateInvoiceTotal(){
-    
+function updateInvoiceTotal(event){
+
 }
 
 //if "other" is selected as a job role, create a new input element
@@ -90,9 +136,9 @@ document.querySelector('#design').addEventListener('change', event => {
 //2. Update the total cost of activites
 document.querySelector('.activities').addEventListener('change', event => {
     if(event.target.tagName === 'INPUT'){
-        setActivitiesListState()
-        updateInvoiceTotal()
-    }
+        updateActivitiesList(event)
+        updateInvoiceTotal(event)
+    } 
 })
 
 
