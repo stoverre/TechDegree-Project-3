@@ -60,15 +60,18 @@ payment.querySelector('#payment').removeChild(payment.querySelector('#payment')
 payment.lastElementChild.style.display = 'none'
 payment.lastElementChild.previousElementSibling.style.display = 'none'
 
-function shirtColorByDesign(event){    
+function updateShirtColor(event){    
     //clear the last selection from the color field
     shirt.querySelector('#color').value = ''
     
     if(event.target.value === "js puns"){
+        document.querySelector('#colors-js-puns').style.display = ''
         setShirtColorState(/.*JS Puns.*/i)
     } else if (event.target.value === "heart js"){
+        document.querySelector('#colors-js-puns').style.display = ''
         setShirtColorState(/.*JS shirt.*/i)
     } else {
+        document.querySelector('#colors-js-puns').style.display = 'none'
         setShirtColorState()
     }
 }
@@ -273,9 +276,10 @@ basicInfo.addEventListener('change', event => {
         basicInfo.lastElementChild.type = 'hidden'
     }
 })
-//if the shirt design changes, update the shirt color list
+document.querySelector('#colors-js-puns').style.display = 'none'
+//if the shirt design changes, show and update the shirt color list
 document.querySelector('#design').addEventListener('change', event => {
-    shirtColorByDesign(event)        
+    updateShirtColor(event)        
 })
 //if a change occurs to the activities, perform two actions
 //1. Update the list to display a double book message, if necessary
