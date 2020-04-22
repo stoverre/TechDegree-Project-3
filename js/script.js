@@ -28,11 +28,12 @@ const rules = {
     name: 'Name cannot be blank', 
     mail: 'Email must be formatted as name@domain.com and cannot be blank',
     activities: 'At least one activity must be selected',
-    ccnum: 'Credit Card number must be between 13 and 16 digits',
-    zipEmpty: 'Zip Code cannot be left blank',
+    numEmpty: 'Credit Card number cannot be left empty',
+    numFormat: 'Credit Card number must be 13-16 digits in length (do not include spaces or hyphens)',
+    zipEmpty: 'Zip Code cannot be left empty',
     zipLength: 'Zip Code must be 5 digits',
     zipDigits: 'Zip Code must contain only numbers',
-    cvvEmpty: 'CVV cannot be left blank',
+    cvvEmpty: 'CVV cannot be left empty',
     cvvLength: 'CVV must be 3 digits',
     cvvDigits: 'CVV must contain only numbers'}
 //updating the id so I can directly reference it with the rules object
@@ -204,7 +205,7 @@ function updatePayment(event){
 function validateFormInputs(event){
     const name = basicInfo.querySelector('#name')
     const email = basicInfo.querySelector('#mail')
-    const firstActInput = document.querySelector('#firstActivity')
+    const firstActInput = activities.querySelector('#firstActivity')
     const invoice = parseInt(actCost.innerHTML.match(/[0-9]+.\d{2}/)[0])
     const ccNum = payment.querySelector('#ccnum')
     const ccZip = payment.querySelector('#zip')
@@ -217,7 +218,7 @@ function validateFormInputs(event){
     const emailRegex = /^\w+@\w+\.[a-z]{3}$/i
     
     //2nd half of the top level '|' accounts for american express format 
-    const ccNumRegex = /(^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,4}$|^\d{4}[ -]?\d{6}[ -]?\d{5}$)/
+    const ccNumFormatRegex = /(^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,4}$|^\d{4}[ -]?\d{6}[ -]?\d{5}$)/
     
     const ccZipLengthRegex = /^.{5}$/
 
@@ -260,9 +261,12 @@ function validateFormInputs(event){
 
     //only check the cc inputs if cc method is selected
     if(payment.children[3].style.display === ''){
-        if (!ccNumRegex.test(ccNum.value)){
+        if(!emptyRegex.test(ccNum.value)){
             submitButton.setAttribute('type', 'button')
-            messageToElement(ccNum, rules.ccnum)
+            messageToElement(ccNum, rules.numFormat)
+        }else if (!ccNumFormatRegex.test(ccNum.value)){
+            submitButton.setAttribute('type', 'button')
+            messageToElement(ccNum, rules.numFormat)
         }else{
             messageToElement(ccNum)
         } 
