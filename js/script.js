@@ -31,6 +31,7 @@ const rules = {
     ccnum: 'Credit Card number must be between 13 and 16 digits',
     zip: 'Zip Code must be 5 digits',
     cvvDigits: 'CVV must be 3 digits',
+    cvvLetters: 'CVV must contain only numbers',
     cvvEmpty: 'CVV cannot be left blank'}
 //updating the id so I can directly reference it with the rules object
 payment.querySelector('#cc-num').id = 'ccnum'
@@ -212,8 +213,10 @@ function validateFormInputs(event){
     //2nd half of the top level '|' accounts for american express format 
     const ccNumRegex = /(^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,4}$|^\d{4}[ -]?\d{6}[ -]?\d{5}$)/
     const ccZipRegex = /^\d{5}$/
-    const ccCVVDigitsRegex = /^\d{3}$/
-    const ccCVVEmptyRegex = /^\d+$/
+
+    const ccCVVEmptyRegex = /./
+    const ccCVVLengthRegex = /^.{3}$/
+    const ccCVVLettersRegex = /\D/
 
 
     //validate each field and display or remove an error message accordingly
@@ -269,10 +272,14 @@ function validateFormInputs(event){
             console.log('CVV is empty')
             submitButton.setAttribute('type', 'button')
             messageToElement(ccCVV, rules.cvvEmpty)
-        }else if (!ccCVVDigitsRegex.test(ccCVV.value)){
+        }else if (!ccCVVLengthRegex.test(ccCVV.value)){
             console.log('CVV is not empty but does not have 3 digits')
             submitButton.setAttribute('type', 'button')
             messageToElement(ccCVV, rules.cvvDigits)
+        }else if (ccCVVLettersRegex.test(ccCVV.value)){
+            console.log('CVV must be only numbers')
+            submitButton.setAttribute('type', 'button')
+            messageToElement(ccCVV, rules.cvvLetters)
         }else{
             messageToElement(ccCVV)
         } 
