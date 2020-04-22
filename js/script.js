@@ -124,6 +124,8 @@ function updateActivitiesList(event){
     let i = 1
     let j = 1
 
+    let newTotal = 0
+
     //if an error message is present in the list, the index needs +1
     if(activityList[1].id === 'error'){
         i = 2
@@ -139,6 +141,13 @@ function updateActivitiesList(event){
         let activityName = activityList[i].firstElementChild.getAttribute('name')
         let isDisabled = activityList[i].firstElementChild.disabled
         
+        //if the current activity in the loop iteration is checked, add
+        //its cost to the total cost
+        eventCost = parseInt(activityList[i].firstElementChild.getAttribute('data-cost'))
+        if(activityList[i].firstElementChild.checked){
+            newTotal += eventCost
+        }
+
         //if an activity matches the dateTime of the clicked on event and is
         //enabled, create the double book message <label> and format the
         //original <label>
@@ -162,18 +171,12 @@ function updateActivitiesList(event){
             activityList[i].removeChild(activityList[i].lastElementChild)
             updateElementStyle(activityList[i],'#9BBEEF', 'black', false)
         }
-
-        //update the cost as activities are selected and deselected
-        let newTotal = 0
-        for(j; j<activityList.length-1; j+=1){
-            eventCost = parseInt(activityList[j].firstElementChild.getAttribute('data-cost'))
-            if(activityList[j].firstElementChild.checked){
-                newTotal += eventCost
-            }
-        }
-        actCost.innerHTML = `Total: ${newTotal}.00`
-        actCost.style.visibility = 'visible'
     }
+
+    //update the total cost of the selected activities
+    actCost.innerHTML = `Total: ${newTotal}.00`
+    actCost.style.visibility = 'visible'
+
      /**
      * @function updateActivityStyle - DRY function to update a specific activity
      *                                 styling based on if it is or is not disabled
@@ -274,7 +277,6 @@ function validateFormInputs(event){
             submitButton.setAttribute('type', 'button')
             messageToElement(ccZip, rules.zipEmpty)
         }else if (!ccZipLengthRegex.test(ccZip.value)){
-            console.log('Zip is not empty but does not have 5 digits')
             submitButton.setAttribute('type', 'button')
             messageToElement(ccZip, rules.zipLength)
         }else{
@@ -282,11 +284,9 @@ function validateFormInputs(event){
         } 
         
         if(!emptyRegex.test(ccCVV.value)){
-            console.log('CVV is empty')
             submitButton.setAttribute('type', 'button')
             messageToElement(ccCVV, rules.cvvEmpty)
         }else if (!ccCVVLengthRegex.test(ccCVV.value)){
-            console.log('CVV is not empty but does not have 3 digits')
             submitButton.setAttribute('type', 'button')
             messageToElement(ccCVV, rules.cvvLength)
         }else{
@@ -329,14 +329,12 @@ function messageToElement(element, brokenRule){
 }
 function liveFormInputValidation(event){
     const input = event.target.value
-    console.log(input)
     const name = basicInfo.querySelector('#name')
     const ccNum = payment.querySelector('#cc-num')
     const ccZip = payment.querySelector('#zip')
     const ccCVV = payment.querySelector('#cvv')
     const digitsRegex = /\D/
     const temp = /\d/
-    console.log(event.target.parentNode.parentNode.id)
 
     if(event.target.id==='name'){
         if (temp.test(input)){
@@ -348,7 +346,6 @@ function liveFormInputValidation(event){
     }
 
     if(event.target.parentNode.parentNode.id === 'credit-card'){   
-        console.log(event.target.id)
         if(event.target.id==='cc-num'){
             if (digitsRegex.test(input)){
                 submitButton.setAttribute('type', 'button')
