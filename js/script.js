@@ -30,7 +30,8 @@ const rules = {
     activities: 'At least one activity must be selected',
     ccnum: 'Credit Card number must be between 13 and 16 digits',
     zip: 'Zip Code must be 5 digits',
-    cvv: 'CVV must be 3 digits'}
+    cvvDigits: 'CVV must be 3 digits',
+    cvvEmpty: 'CVV cannot be left blank'}
 //updating the id so I can directly reference it with the rules object
 payment.querySelector('#cc-num').id = 'ccnum'
 
@@ -77,7 +78,7 @@ function shirtColorByDesign(event){
         colorInput.value = 'placeholder'
     } else if (designInput === "heart js"){
         setShirtColorState(/.*JS shirt.*/i)
-        colorDiv.style.display = ''
+        
         colorInput.value = 'placeholder'
     } else {
         colorDiv.style.display = 'none'
@@ -189,19 +190,21 @@ function updatePayment(event){
     }
 }
 function validateFormInputs(event){
-    let nameField = basicInfo.querySelector('#name')
-    let email = basicInfo.querySelector('#mail')
-    let cost = parseInt(actCost.innerHTML.match(/[0-9]+.\d{2}/)[0])
-    let ccNum = payment.querySelector('#ccnum')
-    let ccZip = payment.querySelector('#zip')
-    let ccCVV = payment.querySelector('#cvv')
+    const nameField = basicInfo.querySelector('#name')
+    const email = basicInfo.querySelector('#mail')
+    const cost = parseInt(actCost.innerHTML.match(/[0-9]+.\d{2}/)[0])
+    const ccNum = payment.querySelector('#ccnum')
+    const ccZip = payment.querySelector('#zip')
+    const ccCVV = payment.querySelector('#cvv')
     
-    let nameRegex = /\w+/
-    let emailRegex = /^\w+@\w+\.[a-z]{3}$/i
+    const nameRegex = /\w+/
+    const emailRegex = /^\w+@\w+\.[a-z]{3}$/i
     //2nd half of the top level or accounts for american express format 
-    let ccNumRegex = /(^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,4}$|^\d{4}[ -]?\d{6}[ -]?\d{5}$)/
-    let ccZipRegex = /^\d{5}$/
-    let ccCVVRegex = /^\d{3}$/
+    const ccNumRegex = /(^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,4}$|^\d{4}[ -]?\d{6}[ -]?\d{5}$)/
+    const ccZipRegex = /^\d{5}$/
+    const ccCVVDigitsRegex = /^\d{3}$/
+    const ccCVVEmptyRegex = /^\d+$/
+
 
     //validate each field and display or remove an error message accordingly
     //1. name is not blank
@@ -239,35 +242,46 @@ function validateFormInputs(event){
             messageToElement(ccZip, false)
         } 
 
-        if (!ccCVVRegex.test(ccCVV.value)){
+        // if (!ccCVVDigitsRegex.test(ccCVV.value)){
+        //     submitButton.setAttribute('type', 'button')
+        //     messageToElement(ccCVV, true, rules.cvvDigits)
+        // }else 
+        if(!ccCVVEmptyRegex.test(ccCVV.value)){
             submitButton.setAttribute('type', 'button')
-            messageToElement(ccCVV, true)
+            messageToElement(ccCVV, true, rules.cvvEmpty)
         }else{
             messageToElement(ccCVV, false)
         } 
     }
 }
-function messageToElement(element, error){
+function messageToElement(element, error, brokenRule){
     const elementPointer = document.getElementById(element.id)
-    //if error is true, update the formatting to display error message
-    //else revert the element to the original formatting
+    //if error is true, update the formatting to display an error message 
+    //on the element else revert the element to the original formatting
     if (error){
-        //create the error message
-        const error = document.createElement('label')
+        //create a new <label> for the error message
+        const errorMessage = document.createElement('label')
         
-        error.innerHTML = rules[element.id]
-        error.id = 'error'
-        error.style.color = 'red'
-        error.style.backgroundColor = 'black'
+        //create a custom error message by matching the id of the passed 
+        //in element to the corresponding property of the rules object 
+        
+        //errorMessage.innerHTML = rules[element.id]
+        errorMessage.innerHTML = brokenRule
+        
+        
+        //error message formatting
+        errorMessage.id = 'error'
+        errorMessage.style.color = 'red'
+        errorMessage.style.backgroundColor = 'black'
         element.style.borderColor = 'red'
         
-        //if no error label is already present, add it from the DOM
+        //only if no error label is already present, add it to the DOM
         if(element.previousElementSibling.id !== 'error'){
-            elementPointer.parentNode.insertBefore(error,elementPointer)
+            elementPointer.parentNode.insertBefore(errorMessage,elementPointer)
         }         
         element.focus()
     }else{
-        //if an error label is not already present, remove it from the DOM
+        //if an error label is already present, remove it from the DOM
         if(element.previousElementSibling.id === 'error'){
             elementPointer.parentNode.removeChild(elementPointer.previousElementSibling)
         }
