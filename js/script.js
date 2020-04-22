@@ -376,7 +376,9 @@ function liveFormInputValidation(event){
 }
 //if "other" is selected as a job role, create a new input element
 basicInfo.addEventListener('change', event => {
-    if(event.target.value === 'other'){
+    console.log(event.target)
+    console.log(event.target.value)
+    if(event.target.value === 'other' || event.target.id === 'other-title'){
         basicInfo.lastElementChild.type = 'text'
     }else{
         basicInfo.lastElementChild.type = 'hidden'
