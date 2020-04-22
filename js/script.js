@@ -44,10 +44,13 @@ colorList.insertBefore(colorPlaceHolder, colorList.firstElementChild)
 
 //create the activity cost element and keep it hidden
 let actCost = document.createElement('label')
-actCost.innerHTML = 'test'
+actCost.id = 'cost'
 actCost.style.visibility = 'hidden'
 actCost.innerHTML = '$0.00'
 activities.appendChild(actCost)
+
+//give the first activity a unique id so I can find it later
+activities.firstElementChild.nextElementSibling.id = 'firstActivity'
 
 //set focus on the Name field
 basicInfo.querySelector('input').focus()
@@ -114,9 +117,15 @@ function updateActivitiesList(event){
     let eventDateTime = event.target.getAttribute('data-day-and-time')
     //pull the event name of the selected event from the event.target
     let eventName = event.target.getAttribute('name')
-    
+    let i = 1
+
+    //if an error message is present in the list, the index needs +1
+    if(activityList[1].id === 'error'){
+        i = 2
+    }
+
     //disable other activities that occur at the same time as the selected one
-    for(let i=1; i<activityList.length-1; i+=1){
+    for(i; i<activityList.length-1; i+=1){
 
         //pull the dateTime, Name, and available attribute from the current list
         //activity
@@ -150,7 +159,7 @@ function updateActivitiesList(event){
 
         //update the cost as activities are selected and deselected
         let newTotal = 0
-        for(let i=1; i<activityList.length-1; i+=1){
+        for(i; i<activityList.length-1; i+=1){
             eventCost = parseInt(activityList[i].firstElementChild.getAttribute('data-cost'))
             if(activityList[i].firstElementChild.checked){
                 newTotal += eventCost
@@ -190,16 +199,17 @@ function updatePayment(event){
     }
 }
 function validateFormInputs(event){
-    const nameField = basicInfo.querySelector('#name')
+    const name = basicInfo.querySelector('#name')
     const email = basicInfo.querySelector('#mail')
-    const cost = parseInt(actCost.innerHTML.match(/[0-9]+.\d{2}/)[0])
+    const firstActInput = document.querySelector('#firstActivity')
+    const invoice = parseInt(actCost.innerHTML.match(/[0-9]+.\d{2}/)[0])
     const ccNum = payment.querySelector('#ccnum')
     const ccZip = payment.querySelector('#zip')
     const ccCVV = payment.querySelector('#cvv')
     
     const nameRegex = /\w+/
     const emailRegex = /^\w+@\w+\.[a-z]{3}$/i
-    //2nd half of the top level or accounts for american express format 
+    //2nd half of the top level '|' accounts for american express format 
     const ccNumRegex = /(^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,4}$|^\d{4}[ -]?\d{6}[ -]?\d{5}$)/
     const ccZipRegex = /^\d{5}$/
     const ccCVVDigitsRegex = /^\d{3}$/
@@ -214,60 +224,71 @@ function validateFormInputs(event){
     //   4a. number is 13-16 numerals
     //   4b. zip is 5 numerals
     //   4c. cvv is 3 numerals
-    if (!nameRegex.test(nameField.value)){
+    if (!nameRegex.test(name.value)){
         submitButton.setAttribute('type', 'button')
-        messageToElement(nameField, true)
+        messageToElement(name, rules.name)
     }else{
-        messageToElement(nameField, false)
+        messageToElement(name)
     }
     
     if (!emailRegex.test(email.value)){
         submitButton.setAttribute('type', 'button')
-        messageToElement(email, true)
+        messageToElement(email, rules.mail)
     }else{
-        messageToElement(email, false)
+        messageToElement(email)
     } 
+
+    //had to do some work arounds in the logic for this element since it
+    //isnt a single input field like all the others. To place the error
+    //in the correct position, the first input field needed selected
+    //and that input field needs an ID to be found in messageToElement()
+    if(invoice===0){
+        submitButton.setAttribute('type', 'button')        
+        messageToElement(firstActInput, rules.activities)
+    }else{
+        messageToElement(firstActInput)
+    }
+
+    //only check the cc inputs if cc method is selected
     if(payment.children[3].style.display === ''){
         if (!ccNumRegex.test(ccNum.value)){
             submitButton.setAttribute('type', 'button')
-            messageToElement(ccNum, true)
+            messageToElement(ccNum, rules.ccnum)
         }else{
-            messageToElement(ccNum, false)
+            messageToElement(ccNum)
         } 
 
         if (!ccZipRegex.test(ccZip.value)){
             submitButton.setAttribute('type', 'button')
-            messageToElement(ccZip, true)
+            messageToElement(ccZip, rules.zip)
         }else{
-            messageToElement(ccZip, false)
+            messageToElement(ccZip)
         } 
 
-        // if (!ccCVVDigitsRegex.test(ccCVV.value)){
-        //     submitButton.setAttribute('type', 'button')
-        //     messageToElement(ccCVV, true, rules.cvvDigits)
-        // }else 
+        if (!ccCVVDigitsRegex.test(ccCVV.value)){
+            submitButton.setAttribute('type', 'button')
+            messageToElement(ccCVV, rules.cvvDigits)
+        }else 
         if(!ccCVVEmptyRegex.test(ccCVV.value)){
             submitButton.setAttribute('type', 'button')
-            messageToElement(ccCVV, true, rules.cvvEmpty)
+            messageToElement(ccCVV, rules.cvvEmpty)
         }else{
-            messageToElement(ccCVV, false)
+            messageToElement(ccCVV)
         } 
     }
 }
-function messageToElement(element, error, brokenRule){
+function messageToElement(element, brokenRule){
     const elementPointer = document.getElementById(element.id)
     //if error is true, update the formatting to display an error message 
     //on the element else revert the element to the original formatting
-    if (error){
+    console.log(brokenRule)
+    if (brokenRule!=null){
         //create a new <label> for the error message
         const errorMessage = document.createElement('label')
         
-        //create a custom error message by matching the id of the passed 
-        //in element to the corresponding property of the rules object 
-        
-        //errorMessage.innerHTML = rules[element.id]
+        //create a custom error message by based on the passed in
+        //rule that was broken        
         errorMessage.innerHTML = brokenRule
-        
         
         //error message formatting
         errorMessage.id = 'error'
@@ -285,8 +306,7 @@ function messageToElement(element, error, brokenRule){
         if(element.previousElementSibling.id === 'error'){
             elementPointer.parentNode.removeChild(elementPointer.previousElementSibling)
         }
-        element.style.backgroundColor = 'white'
-        element.style.color = 'black'
+
         element.style.borderColor = 'rgb(111, 157, 220)'
     }
 }
