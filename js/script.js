@@ -214,7 +214,7 @@ function validateFormInputs(event){
     const emptyRegex = /./
 
     const nameRegex = /[a-zA-z- ]+/
-    const emailRegex = /^\w+@\w+\.[a-z]{3}$/i
+    const emailRegex = /^[A-Za-z0-9.-]+@\w+\.[a-z]{3}$/i
     
     //2nd half of the top level '|' accounts for american express format 
     const ccNumFormatRegex = /(^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,4}$|^\d{4}[ -]?\d{6}[ -]?\d{5}$)/
@@ -344,7 +344,7 @@ function liveFormInputValidation(event){
             messageToElement(name) 
         }
     }
-    
+
     if(event.target.parentNode.parentNode.id === 'credit-card'){   
         console.log(event.target.id)
         if(event.target.id==='cc-num'){
