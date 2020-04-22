@@ -29,15 +29,14 @@ const rules = {
     mail: 'Email must be formatted as name@domain.com and cannot be blank',
     activities: 'At least one activity must be selected',
     numEmpty: 'Credit Card number cannot be left empty',
-    numFormat: 'Credit Card number must be 13-16 digits in length (do not include spaces or hyphens)',
+    numFormat: 'Credit Card number must be 13-16 digits in length',
+    numDigits: 'Credit Card number must contain only numbers',
     zipEmpty: 'Zip Code cannot be left empty',
     zipLength: 'Zip Code must be 5 digits',
     zipDigits: 'Zip Code must contain only numbers',
     cvvEmpty: 'CVV cannot be left empty',
     cvvLength: 'CVV must be 3 digits',
     cvvDigits: 'CVV must contain only numbers'}
-//updating the id so I can directly reference it with the rules object
-payment.querySelector('#cc-num').id = 'ccnum'
 
 //create the color placeholder <option>
 let colorList = document.querySelector('#color')
@@ -207,7 +206,7 @@ function validateFormInputs(event){
     const email = basicInfo.querySelector('#mail')
     const firstActInput = activities.querySelector('#firstActivity')
     const invoice = parseInt(actCost.innerHTML.match(/[0-9]+.\d{2}/)[0])
-    const ccNum = payment.querySelector('#ccnum')
+    const ccNum = payment.querySelector('#cc-num')
     const ccZip = payment.querySelector('#zip')
     const ccCVV = payment.querySelector('#cvv')
     
@@ -336,6 +335,45 @@ function messageToElement(element, brokenRule){
         element.style.borderColor = 'rgb(111, 157, 220)'
     }
 }
+function liveFormInputValidation(event){
+    const input = event.target.value
+    console.log(input)
+    const ccNum = payment.querySelector('#cc-num')
+    const ccZip = payment.querySelector('#zip')
+    const ccCVV = payment.querySelector('#cvv')
+    const digitsRegex = /\D/
+    console.log(event.target.parentNode.parentNode.id)
+
+    if(event.target.parentNode.parentNode.id === 'credit-card'){   
+        console.log(event.target.id)
+        if(event.target.id==='cc-num'){
+            if (digitsRegex.test(input)){
+                submitButton.setAttribute('type', 'button')
+                messageToElement(ccNum, rules.numDigits)
+            }else{
+                messageToElement(ccNum) 
+            }
+        }
+        if(event.target.id==='zip'){
+            if (digitsRegex.test(input)){
+                
+                submitButton.setAttribute('type', 'button')
+                messageToElement(ccZip, rules.zipDigits)
+            }else{
+                messageToElement(ccZip) 
+            }
+        }
+        if(event.target.id==='cvv'){
+            if (digitsRegex.test(input)){
+                
+                submitButton.setAttribute('type','button')
+                messageToElement(ccCVV, rules.cvvDigits)
+            }else{
+                messageToElement(ccCVV) 
+            }
+        }
+    }
+}
 //if "other" is selected as a job role, create a new input element
 basicInfo.addEventListener('change', event => {
     if(event.target.value === 'other'){
@@ -364,6 +402,9 @@ document.querySelector('#payment').addEventListener('change', event => {
 submitButton.addEventListener('click', event => {
     submitButton.setAttribute('type', 'submit')
     validateFormInputs(event)
+})
+document.addEventListener('keyup', event => {
+    liveFormInputValidation(event)
 })
 
 
