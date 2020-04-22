@@ -264,14 +264,15 @@ function validateFormInputs(event){
         }else{
             messageToElement(ccZip)
         } 
-
-        if (!ccCVVDigitsRegex.test(ccCVV.value)){
-            submitButton.setAttribute('type', 'button')
-            messageToElement(ccCVV, rules.cvvDigits)
-        }else 
+        console.log(ccCVV.value)
         if(!ccCVVEmptyRegex.test(ccCVV.value)){
+            console.log('CVV is empty')
             submitButton.setAttribute('type', 'button')
             messageToElement(ccCVV, rules.cvvEmpty)
+        }else if (!ccCVVDigitsRegex.test(ccCVV.value)){
+            console.log('CVV is not empty but does not have 3 digits')
+            submitButton.setAttribute('type', 'button')
+            messageToElement(ccCVV, rules.cvvDigits)
         }else{
             messageToElement(ccCVV)
         } 
@@ -279,9 +280,14 @@ function validateFormInputs(event){
 }
 function messageToElement(element, brokenRule){
     const elementPointer = document.getElementById(element.id)
+    
+    //if an error label is already present, remove it from the DOM
+    if(element.previousElementSibling.id === 'error'){
+        elementPointer.parentNode.removeChild(elementPointer.previousElementSibling)
+    }
+
     //if error is true, update the formatting to display an error message 
     //on the element else revert the element to the original formatting
-    console.log(brokenRule)
     if (brokenRule!=null){
         //create a new <label> for the error message
         const errorMessage = document.createElement('label')
@@ -302,18 +308,11 @@ function messageToElement(element, brokenRule){
         }         
         element.focus()
     }else{
-        //if an error label is already present, remove it from the DOM
-        if(element.previousElementSibling.id === 'error'){
-            elementPointer.parentNode.removeChild(elementPointer.previousElementSibling)
-        }
-
         element.style.borderColor = 'rgb(111, 157, 220)'
     }
 }
 //if "other" is selected as a job role, create a new input element
 basicInfo.addEventListener('change', event => {
-    console.log(event.target)
-    console.log(event.target.id)
     if(event.target.value === 'other'){
         basicInfo.lastElementChild.type = 'text'
     }else{
