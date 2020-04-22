@@ -122,10 +122,12 @@ function updateActivitiesList(event){
     //pull the event name of the selected event from the event.target
     let eventName = event.target.getAttribute('name')
     let i = 1
+    let j = 1
 
     //if an error message is present in the list, the index needs +1
     if(activityList[1].id === 'error'){
         i = 2
+        j = 2
     }
 
     //disable other activities that occur at the same time as the selected one
@@ -163,9 +165,9 @@ function updateActivitiesList(event){
 
         //update the cost as activities are selected and deselected
         let newTotal = 0
-        for(i; i<activityList.length-1; i+=1){
-            eventCost = parseInt(activityList[i].firstElementChild.getAttribute('data-cost'))
-            if(activityList[i].firstElementChild.checked){
+        for(j; j<activityList.length-1; j+=1){
+            eventCost = parseInt(activityList[j].firstElementChild.getAttribute('data-cost'))
+            if(activityList[j].firstElementChild.checked){
                 newTotal += eventCost
             }
         }
