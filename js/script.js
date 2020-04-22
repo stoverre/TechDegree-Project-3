@@ -20,6 +20,9 @@ let submitButton = document.getElementsByTagName('button')[0]
 //start with other job role text field hidden
 basicInfo.lastElementChild.type = 'hidden'
 
+//start with shirt color field hidden
+shirt.lastElementChild.lastElementChild.style.display = 'none'
+
 //create a validation rules object
 const rules = {
     name: 'Name cannot be blank', 
@@ -62,13 +65,22 @@ payment.lastElementChild.previousElementSibling.style.display = 'none'
 
 function shirtColorByDesign(event){    
     //clear the last selection from the color field
-    shirt.querySelector('#color').value = ''
+    const colorInput = document.querySelector('#color')
     
-    if(event.target.value === "js puns"){
+    const colorDiv = document.querySelector('#colors-js-puns')
+
+    let designInput = event.target.value
+    
+    if(designInput === "js puns"){
         setShirtColorState(/.*JS Puns.*/i)
-    } else if (event.target.value === "heart js"){
+        colorDiv.style.display = ''
+        colorInput.value = 'placeholder'
+    } else if (designInput === "heart js"){
         setShirtColorState(/.*JS shirt.*/i)
+        colorDiv.style.display = ''
+        colorInput.value = 'placeholder'
     } else {
+        colorDiv.style.display = 'none'
         setShirtColorState()
     }
 }
@@ -84,6 +96,7 @@ function setShirtColorState(regex){
             shirtColors[i].style.display = 'none'
         }
     } else {
+
         for(let i=0; i<shirtColors.length; i+=1){
             if(regex.test(shirtColors[i].innerHTML)){
                 shirtColors[i].style.display = ''
