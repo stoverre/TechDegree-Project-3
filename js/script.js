@@ -29,10 +29,12 @@ const rules = {
     mail: 'Email must be formatted as name@domain.com and cannot be blank',
     activities: 'At least one activity must be selected',
     ccnum: 'Credit Card number must be between 13 and 16 digits',
-    zip: 'Zip Code must be 5 digits',
-    cvvDigits: 'CVV must be 3 digits',
-    cvvLetters: 'CVV must contain only numbers',
-    cvvEmpty: 'CVV cannot be left blank'}
+    zipEmpty: 'Zip Code cannot be left blank',
+    zipLength: 'Zip Code must be 5 digits',
+    zipDigits: 'Zip Code must contain only numbers',
+    cvvEmpty: 'CVV cannot be left blank',
+    cvvLength: 'CVV must be 3 digits',
+    cvvDigits: 'CVV must contain only numbers'}
 //updating the id so I can directly reference it with the rules object
 payment.querySelector('#cc-num').id = 'ccnum'
 
@@ -208,15 +210,19 @@ function validateFormInputs(event){
     const ccZip = payment.querySelector('#zip')
     const ccCVV = payment.querySelector('#cvv')
     
+    const emptyRegex = /./
+    const digitsRegex = /\D/
+
     const nameRegex = /\w+/
     const emailRegex = /^\w+@\w+\.[a-z]{3}$/i
+    
     //2nd half of the top level '|' accounts for american express format 
     const ccNumRegex = /(^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,4}$|^\d{4}[ -]?\d{6}[ -]?\d{5}$)/
-    const ccZipRegex = /^\d{5}$/
+    
+    const ccZipLengthRegex = /^.{5}$/
 
-    const ccCVVEmptyRegex = /./
     const ccCVVLengthRegex = /^.{3}$/
-    const ccCVVLettersRegex = /\D/
+    
 
 
     //validate each field and display or remove an error message accordingly
@@ -261,25 +267,33 @@ function validateFormInputs(event){
             messageToElement(ccNum)
         } 
 
-        if (!ccZipRegex.test(ccZip.value)){
+        if (!emptyRegex.test(ccZip.value)){
             submitButton.setAttribute('type', 'button')
-            messageToElement(ccZip, rules.zip)
+            messageToElement(ccZip, rules.zipEmpty)
+        }else if (!ccZipLengthRegex.test(ccZip.value)){
+            console.log('Zip is not empty but does not have 5 digits')
+            submitButton.setAttribute('type', 'button')
+            messageToElement(ccZip, rules.zipLength)
+        }else if (digitsRegex.test(ccZip.value)){
+            console.log('Zip must be only numbers')
+            submitButton.setAttribute('type', 'button')
+            messageToElement(ccZip, rules.zipDigits)
         }else{
             messageToElement(ccZip)
         } 
-        console.log(ccCVV.value)
-        if(!ccCVVEmptyRegex.test(ccCVV.value)){
+        
+        if(!emptyRegex.test(ccCVV.value)){
             console.log('CVV is empty')
             submitButton.setAttribute('type', 'button')
             messageToElement(ccCVV, rules.cvvEmpty)
         }else if (!ccCVVLengthRegex.test(ccCVV.value)){
             console.log('CVV is not empty but does not have 3 digits')
             submitButton.setAttribute('type', 'button')
-            messageToElement(ccCVV, rules.cvvDigits)
-        }else if (ccCVVLettersRegex.test(ccCVV.value)){
+            messageToElement(ccCVV, rules.cvvLength)
+        }else if (digitsRegex.test(ccCVV.value)){
             console.log('CVV must be only numbers')
             submitButton.setAttribute('type', 'button')
-            messageToElement(ccCVV, rules.cvvLetters)
+            messageToElement(ccCVV, rules.cvvDigits)
         }else{
             messageToElement(ccCVV)
         } 
