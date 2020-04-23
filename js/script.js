@@ -228,13 +228,13 @@ function updateActivitiesList(event){
             let doubleBook = document.createElement('label')
             doubleBook.innerHTML = 'You have already selected an activity held at' 
                 doubleBook.innerHTML += ' this time.'
-            doubleBook.style.color = 'red'
+            //doubleBook.style.color = 'red'
             doubleBook.style.fontSize = '1em'
             doubleBook.style.font = 'bold'
-            doubleBook.style.backgroundColor = 'black'
+            //doubleBook.style.backgroundColor = 'navyblue'
 
             activityList[i].appendChild(doubleBook)
-            updateElementStyle(activityList[i],'black', 'red', true)
+            updateElementStyle(activityList[i],'lightyellow', 'black', true)
         }
         //if the activity matches the dateTime of the clicked on event
         //but is disabled, reverse the formatting changes
