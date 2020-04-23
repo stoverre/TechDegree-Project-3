@@ -34,7 +34,7 @@ const rules = {
     cvvDigits: 'CVV must contain only numbers'}
 
 /** 
-* This function makes all the initial changes to the HTML
+* @summary This function makes all the initial changes to the HTML
 * @param {} none - NA
 * @return {} none
 */
@@ -117,9 +117,8 @@ function initializePage(){
         document.querySelector('#exp-year').appendChild(year)
     }
 }
-
 /** 
-* inserts a red asterik before the passed in label id
+* @summary inserts a red asterik before the passed in label id
 * @param {string} labelID - the <id> in string form of the label to update
 * @return {} none
 */
@@ -141,57 +140,60 @@ function addAsterisk(labelID){
     newNameLabel.appendChild(nameSubDiv)
     document.querySelector(selector).parentNode.insertBefore(newNameLabel,document.querySelector(selector))
 }
+/** 
+* @summary Decides which portion of the color list should be displayed based on the design selected
+* @param {object} event - the eventListener return object
+* @return {} none
+*/
 function shirtColorByDesign(event){    
-    //clear the last selection from the color field
     const colorInput = document.querySelector('#color')
-    
     const colorDiv = document.querySelector('#colors-js-puns')
-
-    let designInput = event.target.value
+    const designInput = event.target.value
     
     if(designInput === "js puns"){
+        colorDiv.style.display = ''
+        colorInput.value = 'placeholder'
         setShirtColorState(/.*JS Puns.*/i)
-        colorDiv.style.display = ''
-        colorInput.value = 'placeholder'
     } else if (designInput === "heart js"){
-        setShirtColorState(/.*JS shirt.*/i)
         colorDiv.style.display = ''
         colorInput.value = 'placeholder'
+        setShirtColorState(/.*JS shirt.*/i)
     } else {
         colorDiv.style.display = 'none'
-        setShirtColorState()
     }
 }
+/** 
+* @summary DRY function to handle the formatting and display of the color list when selections 
+* are made
+* @param {object} regex - The regular expression determined in shirtColorByDesign to 
+* handle sorting of the color list
+* @return {} none
+*/
 function setShirtColorState(regex){
     //HTMLCollection of the shirt color options
     let shirtColors = shirt.querySelector('#color').children
-    
-    if(regex===undefined){
-        shirt.querySelector('#color').value = "placeholder"
-        //hide everything except the placeholder
-        shirtColors[0].style.display = ''
-        for(let i=1; i<shirtColors.length; i+=1){
-            shirtColors[i].style.display = 'none'
-        }
-    } else {
 
-        for(let i=0; i<shirtColors.length; i+=1){
-            if(regex.test(shirtColors[i].innerHTML)){
-                shirtColors[i].style.display = ''
-            } else {
-                shirtColors[i].style.display = 'none'
-            }
+    for(let i=0; i<shirtColors.length; i+=1){
+        if(regex.test(shirtColors[i].innerHTML)){
+            shirtColors[i].style.display = ''
+        } else {
+            shirtColors[i].style.display = 'none'
         }
     }
 }
+/** 
+* @summary Update the list of activites. handles doublebooking logic, calculation of the total cost, and formatting for each
+* @param {object} event - the eventListener return object
+* @return {} none
+*/
 function updateActivitiesList(event){
     //HTMLCollection of the activity options
-    let activityList = activities.children
+    const activityList = activities.children
     const actCost = document.querySelector('#cost')
     //pull the date and time of the selected event from the event.target
-    let eventDateTime = event.target.getAttribute('data-day-and-time')
+    const eventDateTime = event.target.getAttribute('data-day-and-time')
     //pull the event name of the selected event from the event.target
-    let eventName = event.target.getAttribute('name')
+    const eventName = event.target.getAttribute('name')
     let i = 2
     let j = 2
 
@@ -226,12 +228,9 @@ function updateActivitiesList(event){
                                                             !isDisabled){
             let doubleBook = document.createElement('label')
             doubleBook.innerHTML = 'You have already selected an activity held at' 
-                doubleBook.innerHTML += ' this time.'
-            //doubleBook.style.color = 'red'
+            doubleBook.innerHTML += ' this time.'
             doubleBook.style.fontSize = '1em'
             doubleBook.style.font = 'bold'
-            //doubleBook.style.backgroundColor = 'navyblue'
-
             activityList[i].appendChild(doubleBook)
             updateElementStyle(activityList[i],'lightyellow', 'black', true)
         }
@@ -264,6 +263,11 @@ function updateActivitiesList(event){
         element.firstElementChild.disabled = disabled
     }
 }
+/** 
+* @summary display the correct payment information based on the payment selected
+* @param {object} event - the eventListener return object
+* @return {} none
+*/
 function updatePayment(event){
     if(event.target.value === 'paypal'){
         payment.children[3].style.display = 'none'
@@ -279,6 +283,11 @@ function updatePayment(event){
         payment.children[5].style.display = 'none'
     }
 }
+/** 
+* @summary handles all the logic for verifying inputs in the text fields of the form
+* @param {object} event - the eventListener return object
+* @return {} none
+*/
 function validateFormInputs(event){
     const actCost = document.querySelector('#cost')
     const name = basicInfo.querySelector('#name')
@@ -323,7 +332,7 @@ function validateFormInputs(event){
         messageToElement(email)
     } 
 
-    //had to do some work arounds in the logic for this element since it
+    //had to do some work arounds in the logic for the activites since it
     //isnt a single input field like all the others. To place the error
     //in the correct position, the first input field needed selected
     //and that input field needs an ID to be found in messageToElement()
@@ -368,6 +377,13 @@ function validateFormInputs(event){
     }
 
 }
+/** 
+* @summary places a unique error message on the passed in element based on the passed in broken rule
+*or removes the message if a brokenrule is not passed in
+* @param {object} element - the form element to have an error posted to it 
+* @param {string} brokenRule - receives the rule that was broken 
+* @return {} none
+*/
 function messageToElement(element, brokenRule){
     const elementPointer = document.getElementById(element.id)
     
@@ -376,7 +392,7 @@ function messageToElement(element, brokenRule){
         elementPointer.parentNode.removeChild(elementPointer.previousElementSibling)
     }
 
-    //if error is true, update the formatting to display an error message 
+    //a brokenrule is passed in, update the formatting to display an error message 
     //on the element else revert the element to the original formatting
     if (brokenRule!=null){
         //create a new <label> for the error message
@@ -392,15 +408,18 @@ function messageToElement(element, brokenRule){
         errorMessage.style.backgroundColor = 'black'
         element.style.borderColor = 'red'
         
-        //only if no error label is already present, add it to the DOM
-        if(element.previousElementSibling.id !== 'error'){
-            elementPointer.parentNode.insertBefore(errorMessage,elementPointer)
-        }         
+        //add the new element to the DOM
+        elementPointer.parentNode.insertBefore(errorMessage,elementPointer)     
         element.focus()
     }else{
         element.style.borderColor = 'rgb(111, 157, 220)'
     }
 }
+/** 
+* @summary handles the logic for testing input text fields with each keystroke
+* @param {object} event - the eventListener return object
+* @return {} none
+*/
 function liveFormInputValidation(event){
     const input = event.target.value
     const name = basicInfo.querySelector('#name')
