@@ -79,14 +79,14 @@ const today = new Date()
 document.querySelector('#exp-month').value = today.getMonth()+2
 document.querySelector('#exp-year').value = today.getFullYear()
 //make 5 future year options
-for(let i=1; i<6; i+=1){
+for(let index=1; index<6; index+=1){
     //delete previous years from the options list
     if(parseInt(document.querySelector('#exp-year').firstElementChild.value) < today.getFullYear()){
         document.querySelector('#exp-year').removeChild(document.querySelector('#exp-year').firstElementChild)
     }
     let year = document.createElement('option')
-    year.value = `${today.getFullYear()+i}`
-    year.innerHTML = `${today.getFullYear()+i}`
+    year.value = `${today.getFullYear()+index}`
+    year.innerHTML = `${today.getFullYear()+index}`
     document.querySelector('#exp-year').appendChild(year)
 }
 
@@ -193,15 +193,15 @@ function updateActivitiesList(event){
     let eventDateTime = event.target.getAttribute('data-day-and-time')
     //pull the event name of the selected event from the event.target
     let eventName = event.target.getAttribute('name')
-    let i = 1
-    let j = 1
+    let i = 2
+    let j = 2
 
     let newTotal = 0
 
     //if an error message is present in the list, the index needs +1
     if(activityList[1].id === 'error'){
-        i = 2
-        j = 2
+        i = 3
+        j = 3
     }
 
     //disable other activities that occur at the same time as the selected one
@@ -246,7 +246,7 @@ function updateActivitiesList(event){
     }
 
     //update the total cost of the selected activities
-    actCost.innerHTML = `Total: ${newTotal}.00`
+    actCost.innerHTML = `Total: $${newTotal}`
     actCost.style.visibility = 'visible'
 
      /**
