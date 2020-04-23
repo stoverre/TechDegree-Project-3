@@ -157,7 +157,7 @@ function shirtColorByDesign(event){
         colorInput.value = 'placeholder'
     } else if (designInput === "heart js"){
         setShirtColorState(/.*JS shirt.*/i)
-        
+        colorDiv.style.display = ''
         colorInput.value = 'placeholder'
     } else {
         colorDiv.style.display = 'none'
