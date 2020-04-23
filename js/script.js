@@ -71,6 +71,62 @@ payment.querySelector('#payment').removeChild(payment.querySelector('#payment')
 payment.lastElementChild.style.display = 'none'
 payment.lastElementChild.previousElementSibling.style.display = 'none'
 
+function initializePage(){
+    //identify required fields
+    const mandatory = document.createElement('label')
+    mandatory.innerHTML = '* denotes a mandatory field'
+    mandatory.style.color = 'red'
+    basicInfo.parentElement.insertBefore(mandatory, basicInfo.parentElement.firstElementChild)
+
+    //add * to the mandatory entry fields
+
+    addAsterisk('name')
+    addAsterisk('mail')
+
+    //create a div to hold the asterik and label divs
+    newNameLabel = document.createElement('div')
+    //name div
+    nameSubDiv = document.createElement('div')
+    //asterik div
+    aster = document.createElement('div')
+    aster.innerHTML = '* '
+    aster.style.color = 'red'
+    aster.className = 'required'
+    aster.style.display = 'inline-block'
+    nameSubDiv.style.display = 'inline-block'
+    nameSubDiv.innerHTML = 'Select at least one'
+    nameSubDiv.style.marginBottom = '1.125em'
+    nameSubDiv.style.color = 'black'
+    newNameLabel.appendChild(aster)
+    newNameLabel.appendChild(nameSubDiv)
+    activities.insertBefore(newNameLabel, activities.firstElementChild.nextElementSibling)
+
+    addAsterisk('cc-num')
+    addAsterisk('zip')
+    addAsterisk('cvv')
+
+}
+//inserts a red asterik before the label with id that is passed in
+function addAsterisk(labelID){
+    const selector = `#${labelID}`
+    console.log(selector)
+    //create a div to hold the asterik and label divs
+    let newNameLabel = document.createElement('div')
+    //name div
+    let nameSubDiv = document.createElement('div')
+    //asterik div
+    let aster = document.createElement('div')
+    aster.innerHTML = '*'
+    aster.style.color = 'red'
+    aster.className = 'required'
+    aster.style.display = 'inline-block'
+    nameSubDiv.style.display = 'inline-block'
+    newNameLabel.appendChild(aster)
+    nameSubDiv.appendChild(document.querySelector(selector).previousElementSibling)
+    newNameLabel.appendChild(nameSubDiv)
+    document.querySelector(selector).parentNode.insertBefore(newNameLabel,document.querySelector(selector))
+}
+initializePage()
 function shirtColorByDesign(event){    
     //clear the last selection from the color field
     const colorInput = document.querySelector('#color')
