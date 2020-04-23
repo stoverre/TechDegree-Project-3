@@ -5,25 +5,19 @@ Richard Stover
 4/19/2020
 ******************************************/
 
-let formElement = document.querySelector('form')
-let pageCategoriesList = formElement.children
+const formElement = document.querySelector('form')
+const pageCategoriesList = formElement.children
 
 //get an HTMLCollection for each <fieldset> (category) of the form
-let basicInfo = pageCategoriesList[0]
-let shirt = pageCategoriesList[1]
-let activities = pageCategoriesList[2]
-let payment = pageCategoriesList[3]
+const basicInfo = pageCategoriesList[0]
+const shirt = pageCategoriesList[1]
+const activities = pageCategoriesList[2]
+const payment = pageCategoriesList[3]
 
 //create a global variable for the submit button
-let submitButton = document.getElementsByTagName('button')[0]
+const submitButton = document.getElementsByTagName('button')[0]
 
-//start with other job role text field hidden
-basicInfo.lastElementChild.type = 'hidden'
-
-//start with shirt color field hidden
-shirt.lastElementChild.lastElementChild.style.display = 'none'
-
-//create a validation rules object
+//create a validation rules list
 const rules = {
     nameEmpty: 'Name cannot be blank',
     nameDigits: 'Name cannot contain numbers', 
@@ -39,59 +33,16 @@ const rules = {
     cvvLength: 'CVV must be 3 digits',
     cvvDigits: 'CVV must contain only numbers'}
 
-//create the job role placeholder <option>
-let titleList = document.querySelector('#title')
-let titlePlaceHolder = document.createElement('option')
-titlePlaceHolder.value="placeholder"
-titlePlaceHolder.innerHTML = 'Please select a Job Title'
-titleList.insertBefore(titlePlaceHolder, titleList.firstElementChild)
-titleList.value = 'placeholder'
-
-//create the color placeholder <option>
-let colorList = document.querySelector('#color')
-let colorPlaceHolder = document.createElement('option')
-colorPlaceHolder.value="placeholder"
-colorPlaceHolder.innerHTML = 'Please select a T-shirt theme'
-colorList.insertBefore(colorPlaceHolder, colorList.firstElementChild)
-
-//create the activity cost element and keep it hidden
-let actCost = document.createElement('label')
-actCost.id = 'cost'
-actCost.style.visibility = 'hidden'
-actCost.innerHTML = '$0'
-activities.appendChild(actCost)
-
-//give the first activity a unique id so I can find it later
-activities.firstElementChild.nextElementSibling.id = 'firstActivity'
-
-//set focus on the Name field
-basicInfo.querySelector('input').focus()
-//initialize the shirt color list
-setShirtColorState()
-
-//set CC as the default payment and hide the other two
-document.querySelector('#payment').value = 'credit card'
-payment.children[4].style.display = 'none'
-payment.children[5].style.display = 'none'
-
-//initialize the credit card expiration to next month
-const today = new Date()
-document.querySelector('#exp-month').value = today.getMonth()+2
-document.querySelector('#exp-year').value = today.getFullYear()
-//make 5 future year options
-for(let index=1; index<6; index+=1){
-    //delete previous years from the options list
-    if(parseInt(document.querySelector('#exp-year').firstElementChild.value) < today.getFullYear()){
-        document.querySelector('#exp-year').removeChild(document.querySelector('#exp-year').firstElementChild)
-    }
-    let year = document.createElement('option')
-    year.value = `${today.getFullYear()+index}`
-    year.innerHTML = `${today.getFullYear()+index}`
-    document.querySelector('#exp-year').appendChild(year)
-}
-
+/** 
+* This function makes all the initial changes to the HTML
+* @param {} none - NA
+* @return {} none
+*/
 function initializePage(){
-    
+    //start with other job role text field hidden
+    basicInfo.lastElementChild.type = 'hidden'
+    //start with shirt color field hidden
+    shirt.lastElementChild.lastElementChild.style.display = 'none'
     //identify required fields
     const mandatory = document.createElement('label')
     mandatory.innerHTML = '* denotes a mandatory field'
@@ -106,9 +57,7 @@ function initializePage(){
     //add the asterik to the Activities section outside the funtion because its structure is
     //unique
     newNameLabel = document.createElement('div')
-    //name div
     nameSubDiv = document.createElement('div')
-    //asterik div
     aster = document.createElement('div')
     aster.innerHTML = '* '
     aster.style.color = 'red'
@@ -121,8 +70,52 @@ function initializePage(){
     newNameLabel.appendChild(aster)
     newNameLabel.appendChild(nameSubDiv)
     activities.insertBefore(newNameLabel, activities.firstElementChild.nextElementSibling)
+    //create the job role placeholder <option>
+    const titleList = document.querySelector('#title')
+    const titlePlaceHolder = document.createElement('option')
+    titlePlaceHolder.value="placeholder"
+    titlePlaceHolder.innerHTML = 'Please select a Job Title'
+    titleList.insertBefore(titlePlaceHolder, titleList.firstElementChild)
+    titleList.value = 'placeholder'
+    //create the color placeholder <option>
+    let colorList = document.querySelector('#color')
+    let colorPlaceHolder = document.createElement('option')
+    colorPlaceHolder.value="placeholder"
+    colorPlaceHolder.innerHTML = 'Please select a T-shirt theme'
+    colorList.insertBefore(colorPlaceHolder, colorList.firstElementChild)
+    //create the activity cost element and keep it hidden
+    let actCost = document.createElement('label')
+    actCost.id = 'cost'
+    actCost.style.visibility = 'hidden'
+    actCost.innerHTML = '$0'
+    activities.appendChild(actCost)
+    //give the first activity a unique id so I can find it later
+    activities.firstElementChild.nextElementSibling.id = 'firstActivity'
+    //set focus on the Name field
+    basicInfo.querySelector('input').focus()
+    //initialize the shirt color list
+    document.querySelector('#colors-js-puns').value = 'placeholder'
+    document.querySelector('#colors-js-puns').style.display = 'none'
+    //set CC as the default payment and hide the other two
+    document.querySelector('#payment').value = 'credit card'
+    payment.children[4].style.display = 'none'
+    payment.children[5].style.display = 'none'
+    //initialize the credit card expiration to next month
+    const today = new Date()
+    document.querySelector('#exp-month').value = today.getMonth()+2
+    document.querySelector('#exp-year').value = today.getFullYear()
+    //make 5 future year options
+    for(let index=1; index<6; index+=1){
+        //delete previous years from the options list
+        if(parseInt(document.querySelector('#exp-year').firstElementChild.value) < today.getFullYear()){
+            document.querySelector('#exp-year').removeChild(document.querySelector('#exp-year').firstElementChild)
+        }
+        let year = document.createElement('option')
+        year.value = `${today.getFullYear()+index}`
+        year.innerHTML = `${today.getFullYear()+index}`
+        document.querySelector('#exp-year').appendChild(year)
+    }
 }
-
 //inserts a red asterik before the label with id that is passed in
 function addAsterisk(labelID){
     const selector = `#${labelID}`
@@ -142,7 +135,6 @@ function addAsterisk(labelID){
     newNameLabel.appendChild(nameSubDiv)
     document.querySelector(selector).parentNode.insertBefore(newNameLabel,document.querySelector(selector))
 }
-initializePage()
 function shirtColorByDesign(event){    
     //clear the last selection from the color field
     const colorInput = document.querySelector('#color')
@@ -189,6 +181,7 @@ function setShirtColorState(regex){
 function updateActivitiesList(event){
     //HTMLCollection of the activity options
     let activityList = activities.children
+    const actCost = document.querySelector('#cost')
     //pull the date and time of the selected event from the event.target
     let eventDateTime = event.target.getAttribute('data-day-and-time')
     //pull the event name of the selected event from the event.target
@@ -281,6 +274,7 @@ function updatePayment(event){
     }
 }
 function validateFormInputs(event){
+    const actCost = document.querySelector('#cost')
     const name = basicInfo.querySelector('#name')
     const email = basicInfo.querySelector('#mail')
     const firstActInput = activities.querySelector('#firstActivity')
@@ -448,9 +442,8 @@ function liveFormInputValidation(event){
         }
     }
 }
+//all form input changes
 formElement.addEventListener('change', event => {
-    console.log(event.target)
-    console.log(event.target.value)
     //if "other" is selected as a job role, show a new input element
     if(event.target.value === 'other' || event.target.id === 'other-title'){
         basicInfo.lastElementChild.type = 'text'
@@ -472,30 +465,6 @@ formElement.addEventListener('change', event => {
         updatePayment(event)
     }
 })
-// //if "other" is selected as a job role, show a new input element
-// basicInfo.addEventListener('change', event => {
-//     if(event.target.value === 'other' || event.target.id === 'other-title'){
-//         basicInfo.lastElementChild.type = 'text'
-//     }else{
-//         basicInfo.lastElementChild.type = 'hidden'
-//     }
-// })
-// //if the shirt design changes, update the shirt color list
-// document.querySelector('#design').addEventListener('change', event => {
-//     shirtColorByDesign(event)        
-// })
-// //if a change occurs to the activities, perform two actions
-// //1. Update the list to display a double book message, if necessary
-// //2. Update the total cost of activities selected
-// document.querySelector('.activities').addEventListener('change', event => {
-//     if(event.target.tagName === 'INPUT'){
-//         updateActivitiesList(event)
-//     } 
-// })
-// //look for a payment type change
-// document.querySelector('#payment').addEventListener('change', event => {
-//     updatePayment(event)
-// })
 //for doing some limited live text input validation
 document.addEventListener('keyup', event => {
     liveFormInputValidation(event)
@@ -505,3 +474,5 @@ submitButton.addEventListener('click', event => {
     //submitButton.setAttribute('type', 'submit')
     validateFormInputs(event)
 })
+
+initializePage()
