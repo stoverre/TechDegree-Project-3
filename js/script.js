@@ -496,7 +496,7 @@ document.addEventListener('keyup', event => {
 })
 //look for the register button click
 submitButton.addEventListener('click', event => {
-    //submitButton.setAttribute('type', 'submit')
+    submitButton.setAttribute('type', 'submit')
     validateFormInputs(event)
 })
 
