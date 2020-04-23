@@ -82,8 +82,13 @@ function initializePage(){
 
     addAsterisk('name')
     addAsterisk('mail')
+    addAsterisk('cc-num')
+    addAsterisk('zip')
+    addAsterisk('cvv')
 
-    //create a div to hold the asterik and label divs
+
+    //add the asterik to the Activities section outside the funtion because its structure is
+    //unique
     newNameLabel = document.createElement('div')
     //name div
     nameSubDiv = document.createElement('div')
@@ -101,9 +106,6 @@ function initializePage(){
     newNameLabel.appendChild(nameSubDiv)
     activities.insertBefore(newNameLabel, activities.firstElementChild.nextElementSibling)
 
-    addAsterisk('cc-num')
-    addAsterisk('zip')
-    addAsterisk('cvv')
 
 }
 //inserts a red asterik before the label with id that is passed in
