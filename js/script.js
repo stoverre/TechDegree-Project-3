@@ -199,7 +199,7 @@ function updateActivitiesList(event){
     let newTotal = 0
 
     //if an error message is present in the list, the index needs +1
-    if(activityList[1].id === 'error'){
+    if(activityList[i].id === 'error'){
         i = 3
         j = 3
     }
@@ -284,9 +284,6 @@ function validateFormInputs(event){
     const name = basicInfo.querySelector('#name')
     const email = basicInfo.querySelector('#mail')
     const firstActInput = activities.querySelector('#firstActivity')
-    console.log(actCost)
-    console.log(actCost.innerHTML)
-    console.log(actCost.innerHTML.match(/[0-9]+.\d{2}/))
     const invoice = parseInt(actCost.innerHTML.match(/[0-9]+/)[0])
     const ccNum = payment.querySelector('#cc-num')
     const ccZip = payment.querySelector('#zip')
@@ -467,6 +464,7 @@ document.querySelector('#design').addEventListener('change', event => {
 //1. Update the list to display a double book message, if necessary
 //2. Update the total cost of activities selected
 document.querySelector('.activities').addEventListener('change', event => {
+    console.log('activity change')
     if(event.target.tagName === 'INPUT'){
         updateActivitiesList(event)
     } 
@@ -475,14 +473,12 @@ document.querySelector('.activities').addEventListener('change', event => {
 document.querySelector('#payment').addEventListener('change', event => {
     updatePayment(event)
 })
-//look for a register button click
-submitButton.addEventListener('click', event => {
-    submitButton.setAttribute('type', 'submit')
-    validateFormInputs(event)
-})
+//for doing some limited live text input validation
 document.addEventListener('keyup', event => {
     liveFormInputValidation(event)
 })
-
-
-
+//look for the register button click
+submitButton.addEventListener('click', event => {
+    //submitButton.setAttribute('type', 'submit')
+    validateFormInputs(event)
+})
