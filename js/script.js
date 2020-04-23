@@ -39,7 +39,6 @@ const rules = {
     cvvLength: 'CVV must be 3 digits',
     cvvDigits: 'CVV must contain only numbers'}
 
-
 //create the job role placeholder <option>
 let titleList = document.querySelector('#title')
 let titlePlaceHolder = document.createElement('option')
@@ -74,6 +73,22 @@ setShirtColorState()
 document.querySelector('#payment').value = 'credit card'
 payment.children[4].style.display = 'none'
 payment.children[5].style.display = 'none'
+
+//initialize the credit card expiration to next month
+const today = new Date()
+document.querySelector('#exp-month').value = today.getMonth()+2
+document.querySelector('#exp-year').value = today.getFullYear()
+//make 5 future year options
+for(let i=1; i<6; i+=1){
+    //delete previous years from the options list
+    if(parseInt(document.querySelector('#exp-year').firstElementChild.value) < today.getFullYear()){
+        document.querySelector('#exp-year').removeChild(document.querySelector('#exp-year').firstElementChild)
+    }
+    let year = document.createElement('option')
+    year.value = `${today.getFullYear()+i}`
+    year.innerHTML = `${today.getFullYear()+i}`
+    document.querySelector('#exp-year').appendChild(year)
+}
 
 function initializePage(){
     
