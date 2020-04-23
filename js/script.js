@@ -78,13 +78,13 @@ function initializePage(){
     titleList.insertBefore(titlePlaceHolder, titleList.firstElementChild)
     titleList.value = 'placeholder'
     //create the color placeholder <option>
-    let colorList = document.querySelector('#color')
-    let colorPlaceHolder = document.createElement('option')
+    const colorList = document.querySelector('#color')
+    const colorPlaceHolder = document.createElement('option')
     colorPlaceHolder.value="placeholder"
     colorPlaceHolder.innerHTML = 'Please select a T-shirt theme'
     colorList.insertBefore(colorPlaceHolder, colorList.firstElementChild)
     //create the activity cost element and keep it hidden
-    let actCost = document.createElement('label')
+    const actCost = document.createElement('label')
     actCost.id = 'cost'
     actCost.style.visibility = 'hidden'
     actCost.innerHTML = '$0'
@@ -96,10 +96,11 @@ function initializePage(){
     //initialize the shirt color list
     document.querySelector('#colors-js-puns').value = 'placeholder'
     document.querySelector('#colors-js-puns').style.display = 'none'
-    //set CC as the default payment and hide the other two
+    //set CC as the default payment and hide the other two and delete 'select a payment' option
     document.querySelector('#payment').value = 'credit card'
     payment.children[4].style.display = 'none'
     payment.children[5].style.display = 'none'
+    document.querySelector('#payment').removeChild(document.querySelector('#payment').firstElementChild)
     //initialize the credit card expiration to next month
     const today = new Date()
     document.querySelector('#exp-month').value = today.getMonth()+2
@@ -116,7 +117,12 @@ function initializePage(){
         document.querySelector('#exp-year').appendChild(year)
     }
 }
-//inserts a red asterik before the label with id that is passed in
+
+/** 
+* inserts a red asterik before the passed in label id
+* @param {string} labelID - the <id> in string form of the label to update
+* @return {} none
+*/
 function addAsterisk(labelID){
     const selector = `#${labelID}`
     //create a div to hold the asterik and label divs
@@ -192,7 +198,7 @@ function updateActivitiesList(event){
     let newTotal = 0
 
     //if an error message is present in the list, the index needs +1
-    if(activityList[i].id === 'error'){
+    if(activityList[1].id === 'error'){
         i = 3
         j = 3
     }
