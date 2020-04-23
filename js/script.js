@@ -294,7 +294,7 @@ function validateFormInputs(event){
     
     const emptyRegex = /./
 
-    const nameRegex = /[a-zA-z- ]+/
+    const nameRegex = /[a-zA-z- ']+/
     const emailRegex = /^[A-Za-z0-9.-]+@\w+\.[a-z]{3}$/i
     
     //2nd half of the top level '|' accounts for american express format 
