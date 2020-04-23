@@ -39,6 +39,15 @@ const rules = {
     cvvLength: 'CVV must be 3 digits',
     cvvDigits: 'CVV must contain only numbers'}
 
+
+//create the job role placeholder <option>
+let titleList = document.querySelector('#title')
+let titlePlaceHolder = document.createElement('option')
+titlePlaceHolder.value="placeholder"
+titlePlaceHolder.innerHTML = 'Please select a Job Title'
+titleList.insertBefore(titlePlaceHolder, titleList.firstElementChild)
+titleList.value = 'placeholder'
+
 //create the color placeholder <option>
 let colorList = document.querySelector('#color')
 let colorPlaceHolder = document.createElement('option')
@@ -61,32 +70,24 @@ basicInfo.querySelector('input').focus()
 //initialize the shirt color list
 setShirtColorState()
 
-//initializing the payment section to default to CC and hide PayPal and Bitcoin
-//two ways of doing this. I opted to remove the the message option as it would
-//never be used with a default value being CC
-payment.querySelector('#payment').removeChild(payment.querySelector('#payment')
-                                                            .firstElementChild)
-//payment.querySelector('#payment').value = 'credit card'
-//payment.lastElementChild.style.visibility = 'hidden'
-payment.lastElementChild.style.display = 'none'
-payment.lastElementChild.previousElementSibling.style.display = 'none'
+//set CC as the default payment and hide the other two
+document.querySelector('#payment').value = 'credit card'
+payment.children[4].style.display = 'none'
+payment.children[5].style.display = 'none'
 
 function initializePage(){
+    
     //identify required fields
     const mandatory = document.createElement('label')
     mandatory.innerHTML = '* denotes a mandatory field'
     mandatory.style.color = 'red'
     basicInfo.parentElement.insertBefore(mandatory, basicInfo.parentElement.firstElementChild)
-
     //add * to the mandatory entry fields
-
     addAsterisk('name')
     addAsterisk('mail')
     addAsterisk('cc-num')
     addAsterisk('zip')
     addAsterisk('cvv')
-
-
     //add the asterik to the Activities section outside the funtion because its structure is
     //unique
     newNameLabel = document.createElement('div')
@@ -105,13 +106,11 @@ function initializePage(){
     newNameLabel.appendChild(aster)
     newNameLabel.appendChild(nameSubDiv)
     activities.insertBefore(newNameLabel, activities.firstElementChild.nextElementSibling)
-
-
 }
+
 //inserts a red asterik before the label with id that is passed in
 function addAsterisk(labelID){
     const selector = `#${labelID}`
-    console.log(selector)
     //create a div to hold the asterik and label divs
     let newNameLabel = document.createElement('div')
     //name div
@@ -434,8 +433,6 @@ function liveFormInputValidation(event){
 }
 //if "other" is selected as a job role, create a new input element
 basicInfo.addEventListener('change', event => {
-    console.log(event.target)
-    console.log(event.target.value)
     if(event.target.value === 'other' || event.target.id === 'other-title'){
         basicInfo.lastElementChild.type = 'text'
     }else{
