@@ -58,7 +58,7 @@ colorList.insertBefore(colorPlaceHolder, colorList.firstElementChild)
 let actCost = document.createElement('label')
 actCost.id = 'cost'
 actCost.style.visibility = 'hidden'
-actCost.innerHTML = '$0.00'
+actCost.innerHTML = '$0'
 activities.appendChild(actCost)
 
 //give the first activity a unique id so I can find it later
@@ -246,6 +246,7 @@ function updateActivitiesList(event){
     }
 
     //update the total cost of the selected activities
+
     actCost.innerHTML = `Total: $${newTotal}`
     actCost.style.visibility = 'visible'
 
@@ -283,7 +284,10 @@ function validateFormInputs(event){
     const name = basicInfo.querySelector('#name')
     const email = basicInfo.querySelector('#mail')
     const firstActInput = activities.querySelector('#firstActivity')
-    const invoice = parseInt(actCost.innerHTML.match(/[0-9]+.\d{2}/)[0])
+    console.log(actCost)
+    console.log(actCost.innerHTML)
+    console.log(actCost.innerHTML.match(/[0-9]+.\d{2}/))
+    const invoice = parseInt(actCost.innerHTML.match(/[0-9]+/)[0])
     const ccNum = payment.querySelector('#cc-num')
     const ccZip = payment.querySelector('#zip')
     const ccCVV = payment.querySelector('#cvv')
@@ -365,6 +369,7 @@ function validateFormInputs(event){
             messageToElement(ccCVV)
         } 
     }
+
 }
 function messageToElement(element, brokenRule){
     const elementPointer = document.getElementById(element.id)
