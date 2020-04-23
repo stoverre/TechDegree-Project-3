@@ -448,31 +448,54 @@ function liveFormInputValidation(event){
         }
     }
 }
-//if "other" is selected as a job role, create a new input element
-basicInfo.addEventListener('change', event => {
+formElement.addEventListener('change', event => {
+    console.log(event.target)
+    console.log(event.target.value)
+    //if "other" is selected as a job role, show a new input element
     if(event.target.value === 'other' || event.target.id === 'other-title'){
         basicInfo.lastElementChild.type = 'text'
     }else{
         basicInfo.lastElementChild.type = 'hidden'
     }
-})
-//if the shirt design changes, update the shirt color list
-document.querySelector('#design').addEventListener('change', event => {
-    shirtColorByDesign(event)        
-})
-//if a change occurs to the activities, perform two actions
-//1. Update the list to display a double book message, if necessary
-//2. Update the total cost of activities selected
-document.querySelector('.activities').addEventListener('change', event => {
-    console.log('activity change')
-    if(event.target.tagName === 'INPUT'){
+    //if the shirt design changes, update the shirt color list
+    if(event.target.id === 'design'){
+        shirtColorByDesign(event)
+    }
+    //if a change occurs to the activities, perform two actions
+    //1. Update the list to display a double book message, if necessary
+    //2. Update the total cost of activities selected
+    if(event.target.type === 'checkbox'){
         updateActivitiesList(event)
-    } 
+    }
+    //look for a payment type change
+    if(event.target.id === 'payment'){
+        updatePayment(event)
+    }
 })
-//look for a payment type change
-document.querySelector('#payment').addEventListener('change', event => {
-    updatePayment(event)
-})
+// //if "other" is selected as a job role, show a new input element
+// basicInfo.addEventListener('change', event => {
+//     if(event.target.value === 'other' || event.target.id === 'other-title'){
+//         basicInfo.lastElementChild.type = 'text'
+//     }else{
+//         basicInfo.lastElementChild.type = 'hidden'
+//     }
+// })
+// //if the shirt design changes, update the shirt color list
+// document.querySelector('#design').addEventListener('change', event => {
+//     shirtColorByDesign(event)        
+// })
+// //if a change occurs to the activities, perform two actions
+// //1. Update the list to display a double book message, if necessary
+// //2. Update the total cost of activities selected
+// document.querySelector('.activities').addEventListener('change', event => {
+//     if(event.target.tagName === 'INPUT'){
+//         updateActivitiesList(event)
+//     } 
+// })
+// //look for a payment type change
+// document.querySelector('#payment').addEventListener('change', event => {
+//     updatePayment(event)
+// })
 //for doing some limited live text input validation
 document.addEventListener('keyup', event => {
     liveFormInputValidation(event)
